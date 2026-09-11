@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SR Sorteios - Sua Sorte Começa Aqui</title>
+    
+    <!-- Fonte Moderna: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Ícones: Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-body: #0b0f17;
+            --bg-card: rgba(22, 28, 41, 0.75);
+            --bg-card-solid: #161c29;
+            --primary-gold: #f59e0b;
+            --primary-gold-hover: #d97706;
+            --gold-glow: rgba(245, 158, 11, 0.25);
+            --primary-green: #10b981;
+            --primary-green-hover: #059669;
+            --green-glow: rgba(16, 185, 129, 0.25);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(245, 158, 11, 0.3);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-color);
+            --shadow-glow: 0 0 25px var(--gold-glow);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(11, 15, 23, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky; 
+            top: 0; 
+            z-index: 900;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .menu-icon { 
+            font-size: 20px; 
+            cursor: pointer; 
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+        .menu-icon:hover {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--primary-gold);
+            border-color: var(--border-highlight);
+        }
+
+        .logo-header { 
+            height: 42px; 
+            object-fit: contain; 
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+        }
+
+        .btn-entrar {
+            background: rgba(245, 158, 11, 0.1); 
+            border: 1px solid var(--border-highlight);
+            color: var(--primary-gold); 
+            padding: 10px 18px; 
+            border-radius: 30px;
+            font-weight: 700; 
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .btn-entrar:hover {
+            background: var(--primary-gold);
+            color: #000;
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-1px);
+        }
+
+        /* Banner */
+        .banner {
+            background: linear-gradient(180deg, rgba(11, 15, 23, 0.4) 0%, var(--bg-body) 100%), url('logo.jpeg') center/cover no-repeat;
+            padding: 40px 20px 20px; 
+            text-align: center;
+            position: relative;
+        }
+        .banner img.logo-main {
+            max-width: 180px; 
+            width: 100%; 
+            height: auto; 
+            margin-bottom: 15px; 
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 0 1px var(--border-color);
+        }
+        .banner h1 { 
+            margin: 8px 0 4px; 
+            font-size: 28px; 
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+        .banner h1 span {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .banner p { 
+            margin: 0; 
+            font-size: 14px; 
+            color: var(--text-muted); 
+            font-weight: 500;
+        }
+
+        /* Container Principal */
+        .container { 
+            padding: 0 20px; 
+            max-width: 600px; 
+            margin: 0 auto; 
+        }
+
+        /* Barra de Progresso */
+        .progress-container {
+            margin: 25px auto 15px; 
+            max-width: 600px;
+        }
+        .progress-bar-bg {
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            height: 32px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+            padding: 3px;
+        }
+        .progress-bar-fill {
+            position: absolute;
+            left: 3px;
+            top: 3px;
+            bottom: 3px;
+            background: linear-gradient(90deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 30px;
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+        .progress-percentage {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            color: #0b0f17;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+        }
+
+        .price-tag {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706); 
+            color: #000;
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            font-weight: 800;
+            font-size: 15px;
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Cards Rápidos */
+        .grid-rapida {
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 12px; 
+            margin-top: 15px;
+        }
+        .card-cota {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: var(--text-main);
+            padding: 16px 8px; 
+            border-radius: var(--radius-md); 
+            text-align: center; 
+            cursor: pointer;
+            border: 1px solid var(--border-color); 
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+        .card-cota:hover { 
+            border-color: var(--primary-gold);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -5px rgba(245, 158, 11, 0.3);
+            background: rgba(30, 38, 56, 0.9);
+        }
+        .card-cota.destaque { 
+            background: linear-gradient(145deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.05) 100%); 
+            border-color: rgba(16, 185, 129, 0.5); 
+        }
+        .card-cota.destaque:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.3);
+        }
+        .card-cota h2 { 
+            margin: 0; 
+            font-size: 22px; 
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .card-cota span { 
+            font-size: 10px; 
+            color: var(--text-muted); 
+            text-transform: uppercase; 
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            display: block;
+        }
+        .card-cota.destaque span {
+            color: var(--primary-green);
+        }
+
+        /* Barra de Ação Inferior */
+        .action-bar {
+            display: flex; 
+            gap: 12px; 
+            margin-top: 25px; 
+            align-items: center;
+            background: var(--bg-card-solid);
+            padding: 12px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-card);
+        }
+        .input-group {
+            display: flex; 
+            align-items: center; 
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: var(--radius-md); 
+            border: 1px solid var(--border-color); 
+            padding: 4px;
+        }
+        .input-group button {
+            background: rgba(255, 255, 255, 0.05); 
+            border: none; 
+            font-size: 16px; 
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            cursor: pointer; 
+            color: var(--text-main);
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .input-group button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--primary-gold);
+        }
+        .input-group input {
+            width: 45px; 
+            text-align: center; 
+            border: none; 
+            background: transparent;
+            font-size: 16px; 
+            font-weight: 800; 
+            color: var(--text-main);
+            outline: none;
+        }
+        .btn-participar {
+            flex-grow: 1; 
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-hover) 100%); 
+            color: #ffffff;
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: var(--radius-md); 
+            display: flex;
+            justify-content: space-between; 
+            align-items: center; 
+            cursor: pointer; 
+            font-size: 15px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px var(--green-glow);
+            transition: all 0.25s ease;
+        }
+        .btn-participar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--green-glow);
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+        }
+
+        /* Painel Admin */
+        .admin-box {
+            margin-top: 35px; 
+            background: rgba(22, 28, 41, 0.9);
+            border: 1px dashed var(--primary-gold);
+            padding: 20px; 
+            border-radius: var(--radius-lg); 
+            display: none;
+            box-shadow: var(--shadow-card);
+        }
+        .btn-sorteio {
+            background: linear-gradient(135deg, var(--primary-gold), var(--primary-gold-hover)); 
+            color: #000; 
+            border: none;
+            padding: 14px 20px; 
+            font-weight: 800; 
+            border-radius: var(--radius-md); 
+            cursor: pointer; 
+            font-size: 14px; 
+            margin-top: 15px; 
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: var(--shadow-glow);
+            transition: 0.25s;
+        }
+        .btn-sorteio:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+        
+        .admin-table-container {
+            margin-top: 15px; 
+            max-height: 280px; 
+            overflow-y: auto; 
+            background: rgba(0, 0, 0, 0.4); 
+            border-radius: var(--radius-md); 
+            padding: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .admin-table {
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 12px; 
+            text-align: left;
+        }
+        .admin-table th, .admin-table td {
+            padding: 10px; 
+            border-bottom: 1px solid var(--border-color); 
+            color: var(--text-muted);
+        }
+        .admin-table th { 
+            color: var(--primary-gold); 
+            position: sticky; 
+            top: 0; 
+            background: #111827; 
+            font-weight: 700;
+        }
+        .status-badge-paid { 
+            background: rgba(16, 185, 129, 0.2); 
+            color: var(--primary-green); 
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            padding: 3px 8px; 
+            border-radius: 12px; 
+            font-size: 10px; 
+            font-weight: 700;
+        }
+        .status-badge-reserved { 
+            background: rgba(245, 158, 11, 0.2); 
+            color: var(--primary-gold); 
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            padding: 3px 8px; 
+            border-radius: 12px; 
+            font-size: 10px; 
+            font-weight: 700;
+        }
+
+        /* ========================================================= */
+        /*   ESTILOS MODERNOS DA BARRA LATERAL (DRAWER MENU)        */
+        /* ========================================================= */
+        .menu-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .menu-backdrop.ativo {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .menu-lateral {
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            width: 310px; 
+            max-width: 85vw;
+            height: 100%;
+            background: linear-gradient(180deg, #111827 0%, #0b0f17 100%); 
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); 
+            transform: translateX(-100%);
+            z-index: 1000; 
+            padding: 20px 16px 30px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 25px 0 50px -10px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .menu-lateral.ativo { 
+            transform: translateX(0); 
+        }
+
+        .menu-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+        .menu-header-logo {
+            height: 34px;
+            object-fit: contain;
+        }
+        .btn-fechar-menu {
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            transition: all 0.25s ease;
+        }
+        .btn-fechar-menu:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        /* Card de Autenticação */
+        .menu-card-auth {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        .menu-card-auth h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .menu-card-auth p {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+        .auth-buttons-grid {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-auth-primary {
+            flex: 1;
+            background: #ffffff;
+            color: #0f172a;
+            border: none;
+            padding: 9px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+        }
+        .btn-auth-primary:hover {
+            background: var(--primary-gold);
+            color: #000;
+            transform: translateY(-2px);
+        }
+        .btn-auth-outline {
+            flex: 1;
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 9px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-auth-outline:hover {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Titulos de Seção */
+        .menu-section-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 1.2px;
+            margin: 14px 0 6px 6px;
+            text-transform: uppercase;
+        }
+
+        /* Itens do Menu */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            margin-bottom: 3px;
+            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-item .icon-box {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: all 0.25s ease;
+            font-size: 13px;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            transform: translateX(4px);
+        }
+
+        .menu-item:hover .icon-box {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--border-highlight);
+            color: var(--primary-gold);
+            transform: scale(1.08);
+        }
+
+        .menu-item.active {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.02) 100%);
+            border-color: rgba(245, 158, 11, 0.3);
+            color: var(--primary-gold);
+        }
+
+        .menu-item.active .icon-box {
+            background: var(--primary-gold);
+            color: #000;
+            border-color: var(--primary-gold);
+        }
+
+        .menu-item.admin-item:hover .icon-box {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        /* Modais */
+        .modal-overlay {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none; 
+            justify-content: center;
+            align-items: center; 
+            z-index: 2000; 
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background: var(--bg-card-solid); 
+            width: 100%; 
+            max-width: 440px;
+            border-radius: var(--radius-lg); 
+            padding: 28px; 
+            position: relative;
+            border: 1px solid var(--border-color); 
+            color: var(--text-main);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px var(--border-color);
+        }
+        .modal-close {
+            position: absolute; 
+            right: 20px; 
+            top: 20px; 
+            font-size: 18px;
+            cursor: pointer; 
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            transition: 0.2s;
+        }
+        .modal-close:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+        .form-group { margin-bottom: 18px; text-align: left; }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-size: 13px; 
+            color: var(--text-muted); 
+            font-weight: 600;
+        }
+        .form-group input {
+            width: 100%; 
+            padding: 14px 16px; 
+            border-radius: var(--radius-md); 
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.4); 
+            color: #fff; 
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .form-group input:focus {
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 3px var(--gold-glow);
+        }
+        .btn-modal {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-hover) 100%); 
+            color: #fff; 
+            border: none;
+            width: 100%; 
+            padding: 14px; 
+            font-size: 15px; 
+            font-weight: 700;
+            border-radius: var(--radius-md); 
+            cursor: pointer; 
+            margin-top: 10px;
+            box-shadow: 0 4px 15px var(--green-glow);
+            transition: 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-modal:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+        .numbers-grid {
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 8px; 
+            max-height: 180px; 
+            overflow-y: auto; 
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+        .number-tag {
+            background: linear-gradient(135deg, var(--primary-gold), var(--primary-gold-hover)); 
+            color: #000; 
+            font-weight: 800;
+            padding: 6px 10px; 
+            border-radius: var(--radius-sm); 
+            font-size: 13px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .pix-code {
+            background: rgba(0, 0, 0, 0.5); 
+            padding: 12px; 
+            border: 1px dashed var(--border-highlight);
+            word-break: break-all; 
+            font-family: monospace; 
+            margin: 12px 0; 
+            border-radius: var(--radius-md); 
+            font-size: 12px;
+            color: var(--primary-gold);
+        }
+        
+        .btn-aprovar {
+            background: var(--primary-green); 
+            color: #fff; 
+            border: none; 
+            padding: 6px 10px; 
+            border-radius: var(--radius-sm); 
+            cursor: pointer; 
+            font-size: 11px; 
+            font-weight: 700;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-aprovar:hover {
+            background: var(--primary-green-hover);
+        }
+
+        /* Tela de confirmação de pagamento */
+        .pagamento-confirmado {
+            text-align: center;
+        }
+
+        .icone-pagamento-confirmado {
+            width: 82px;
+            height: 82px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.15);
+            border: 3px solid var(--primary-green);
+            color: var(--primary-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 0 25px var(--green-glow);
+        }
+
+        .pagamento-confirmado h3 {
+            color: var(--primary-green);
+            margin: 0 0 8px;
+            font-size: 22px;
+        }
+
+        .pagamento-confirmado p {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .pagamento-confirmado .numero-confirmado {
+            margin-top: 18px;
+            padding: 14px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius-md);
+            color: #fff;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="menu-icon" onclick="toggleMenu()"><i class="fa-solid fa-bars-staggered"></i></div>
+        <img src="logo.jpeg" alt="SR Sorteios" class="logo-header">
+        <button class="btn-entrar" onclick="abrirModalConsulta()"><i class="fa-solid fa-circle-user"></i> Entrar</button>
+    </header>
+
+    <!-- Overlay Fundo Escuro para Menu -->
+    <div class="menu-backdrop" id="menuBackdrop" onclick="toggleMenu()"></div>
+
+    <!-- MENU LATERAL REDESENHADO -->
+    <div class="menu-lateral" id="menuLateral">
+        <div class="menu-header-top">
+            <img src="logo.jpeg" alt="SR Sorteios" class="menu-header-logo">
+            <span class="btn-fechar-menu" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+
+        <!-- Card de Boas-vindas / Login -->
+        <div class="menu-card-auth">
+            <h4>Entre para acompanhar seus números</h4>
+            <p>Consulte compras, números e prêmios em um só lugar.</p>
+            <div class="auth-buttons-grid">
+                <button class="btn-auth-primary" onclick="toggleMenu(); abrirModalConsulta();">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar
+                </button>
+                <button class="btn-auth-outline" onclick="toggleMenu(); abrirModalConsulta();">
+                    Criar cadastro
+                </button>
+            </div>
+        </div>
+
+        <!-- Navegação de Links Categorizados -->
+        <div class="menu-section-label">PRINCIPAL</div>
+        <a href="#" onclick="toggleMenu()" class="menu-item active">
+            <div class="icon-box"><i class="fa-solid fa-house"></i></div>
+            <span>Início</span>
+        </a>
+        <a href="#" onclick="toggleMenu(); abrirModalConsulta();" class="menu-item">
+            <div class="icon-box"><i class="fa-solid fa-ticket"></i></div>
+            <span>Meus números</span>
+        </a>
+        <a href="#" onclick="toggleMenu(); abrirModalGanhadores();" class="menu-item">
+            <div class="icon-box"><i class="fa-solid fa-trophy"></i></div>
+            <span>Ganhadores</span>
+        </a>
+
+        <div class="menu-section-label">MINHA CONTA</div>
+        <a href="#" onclick="toggleMenu(); abrirModalConsulta();" class="menu-item">
+            <div class="icon-box"><i class="fa-solid fa-user-plus"></i></div>
+            <span>Criar cadastro</span>
+        </a>
+
+        <div class="menu-section-label">COMUNIDADE</div>
+        <a href="#" onclick="toggleMenu(); abrirModalTermos();" class="menu-item">
+            <div class="icon-box"><i class="fa-solid fa-file-contract"></i></div>
+            <span>Termos de uso</span>
+        </a>
+
+        <div class="menu-section-label">ADMINISTRAÇÃO</div>
+        <a href="#" onclick="toggleMenu(); solicitarSenhaAdmin();" class="menu-item admin-item">
+            <div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+            <span>Painel Admin</span>
+        </a>
+    </div>
+
+    <!-- Banner -->
+    <div class="banner">
+        <img src="logo.jpeg" alt="SR Sorteios" class="logo-main"><br>
+        <h1>Prêmios em <span>PIX</span></h1>
+        <p><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-gold);"></i> A sua sorte começa aqui!</p>
+    </div>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <!-- Barra de Progresso -->
+        <div class="progress-container">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="barraPreenchimento"></div>
+                <div class="progress-percentage" id="porcentagemTexto">0%</div>
+            </div>
+        </div>
+
+        <div class="price-tag">
+            <span>por apenas</span> <span class="badge">R$ 0,99</span>
+        </div>
+
+        <!-- SEÇÃO DE SELEÇÃO RÁPIDA -->
+        <div class="rapida-section" style="margin-top: 25px;">
+            <p style="font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 12px; font-weight: 600;">
+                <i class="fa-solid fa-fire" style="color: var(--primary-gold);"></i> Selecione a quantidade de cotas:
+            </p>
+            <div class="grid-rapida">
+                <div class="card-cota" onclick="selecionarPacote(10)"><h2>+10</h2><span>SELECIONAR</span></div>
+                <div class="card-cota" onclick="selecionarPacote(20)"><h2>+20</h2><span>SELECIONAR</span></div>
+                <div class="card-cota destaque" onclick="selecionarPacote(50)"><h2>+50</h2><span>MAIS POPULAR</span></div>
+                <div class="card-cota" onclick="selecionarPacote(100)"><h2>+100</h2><span>SELECIONAR</span></div>
+                <div class="card-cota" onclick="selecionarPacote(200)"><h2>+200</h2><span>SELECIONAR</span></div>
+                <div class="card-cota" onclick="selecionarPacote(300)"><h2>+300</h2><span>SELECIONAR</span></div>
+            </div>
+        </div>
+
+        <!-- Barra Inferior de Ação -->
+        <div class="action-bar">
+            <div class="input-group">
+                <button onclick="alterarQuantidade(-1)"><i class="fa-solid fa-minus"></i></button>
+                <input type="text" id="qtdInput" value="25" readonly>
+                <button onclick="alterarQuantidade(1)"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <button class="btn-participar" onclick="iniciarCheckout()">
+                <span><i class="fa-solid fa-cart-shopping"></i> Participar</span>
+                <div style="text-align: right;">
+                    <div style="font-weight: 800; font-size: 16px;" id="totalValor">R$ 24,75</div>
+                </div>
+            </button>
+        </div>
+
+        <!-- PAINEL ADMIN -->
+        <div class="admin-box" id="painelAdmin">
+            <p style="font-size: 15px; color: var(--primary-gold); margin: 0 0 5px 0; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-shield-halved"></i> Painel do Administrador
+            </p>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 12px 0;">Gestão e controle de bilhetes em tempo real:</p>
+            
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Cota</th>
+                            <th>Status</th>
+                            <th>Comprador</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTabelaVendas">
+                        <tr><td colspan="4" style="text-align:center;">Carregando vendas...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="btn-sorteio" onclick="realizarSorteioInterno(1)">
+                <i class="fa-solid fa-dice"></i> Realizar Sorteio Seguro entre os Pagos
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 1: CHECKOUT -->
+    <div class="modal-overlay" id="modalCheckout">
+        <div class="modal-content">
+            <span class="modal-close" onclick="fecharModal('modalCheckout')"><i class="fa-solid fa-xmark"></i></span>
+            <h3 style="color: var(--primary-gold); margin-top:0; font-size: 20px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-basket-shopping"></i> Finalizar Reserva
+            </h3>
+            <p style="font-size:13px; color: var(--text-muted); margin-top: 4px; margin-bottom: 18px;" id="resumoCheckoutTexto">Preencha seus dados para garantir suas cotas.</p>
+            
+            <div class="form-group">
+                <label><i class="fa-solid fa-user"></i> Nome Completo</label>
+                <input type="text" id="clienteNome" placeholder="Ex: João Silva">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-brands fa-whatsapp"></i> Telefone (WhatsApp)</label>
+                <input type="tel" id="clienteTelefone" placeholder="(83) 99999-9999">
+            </div>
+
+            <button class="btn-modal" onclick="confirmarReserva()">
+                <i class="fa-solid fa-qrcode"></i> Gerar PIX de Pagamento
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: TELA DO PIX -->
+    <div class="modal-overlay" id="modalPix">
+        <div class="modal-content" style="text-align: center;">
+            <span class="modal-close" onclick="fecharModal('modalPix')"><i class="fa-solid fa-xmark"></i></span>
+            <h3 style="color: var(--primary-gold); margin-top:0; font-size: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fa-solid fa-circle-check" style="color: var(--primary-green);"></i> Reserva Realizada!
+            </h3>
+            <p style="font-size:13px; color: var(--text-muted); margin-top: 4px;">Faça o PIX para confirmar seus bilhetes.</p>
+
+            <div style="font-size: 22px; font-weight: 800; margin: 15px 0; color: var(--primary-green);" id="pixTotalValor">R$ 0,00</div>
+
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: 600;">Seus Números Reservados:</p>
+            <div class="numbers-grid" id="pixNumerosReservados"></div>
+
+            <p style="font-size: 12px; color: var(--primary-gold); font-weight: 700; margin-top: 10px;">Chave PIX (Copia e Cola):</p>
+            <div class="pix-code" id="chavePixTexto">00020126580014BR.GOV.BCB.PIX0136cliente@email.com520400005303986540500.005802BR</div>
+
+            <button class="btn-modal" onclick="copiarPix()">
+                <i class="fa-solid fa-copy"></i> Copiar Chave PIX
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 3: CONSULTAR MEUS NÚMEROS -->
+    <div class="modal-overlay" id="modalConsulta">
+        <div class="modal-content">
+            <span class="modal-close" onclick="fecharModal('modalConsulta')"><i class="fa-solid fa-xmark"></i></span>
+            <h3 style="color: var(--primary-gold); margin-top:0; font-size: 20px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-magnifying-glass"></i> Meus Números
+            </h3>
+            <p style="font-size:13px; color: var(--text-muted); margin-top: 4px; margin-bottom: 18px;">Informe o telefone utilizado na compra:</p>
+
+            <div class="form-group">
+                <input type="tel" id="consultaTelefone" placeholder="Digite seu telefone com DDD...">
+            </div>
+            <button class="btn-modal" onclick="buscarMeusNumeros()">
+                <i class="fa-solid fa-search"></i> Buscar Bilhetes
+            </button>
+
+            <div id="resultadoConsulta" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: TERMOS DE USO -->
+    <div class="modal-overlay" id="modalTermos">
+        <div class="modal-content">
+            <span class="modal-close" onclick="fecharModal('modalTermos')"><i class="fa-solid fa-xmark"></i></span>
+            <h3 style="color: var(--primary-gold); margin-top:0; font-size: 20px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-file-lines"></i> Termos de Uso
+            </h3>
+            <div style="font-size:13px; color: var(--text-muted); max-height: 250px; overflow-y: auto; text-align: left; line-height: 1.6; margin-top: 15px;">
+                <p style="margin-bottom: 8px;">1. O sorteio é realizado com base nas cotas disponíveis numeradas de 1 a 3.000.</p>
+                <p style="margin-bottom: 8px;">2. A reserva de bilhetes tem validade temporária até a confirmação do pagamento via PIX.</p>
+                <p>3. Em caso de dúvidas, entre em contato diretamente com a organização do evento.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: GANHADORES (DINÂMICO) -->
+    <div class="modal-overlay" id="modalGanhadores">
+        <div class="modal-content" style="text-align: center;">
+            <span class="modal-close" onclick="fecharModal('modalGanhadores')"><i class="fa-solid fa-xmark"></i></span>
+            <h3 style="color: var(--primary-gold); margin-top:0; font-size: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fa-solid fa-trophy"></i> Ganhadores
+            </h3>
+            <div id="conteudoGanhadores" style="margin-top: 15px;">
+                <!-- JS preenche dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 6: PAGAMENTO CONFIRMADO -->
+    <div class="modal-overlay" id="modalPagamentoConfirmado">
+        <div class="modal-content pagamento-confirmado">
+            <div class="icone-pagamento-confirmado">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3>Pagamento identificado!</h3>
+            <p>Seu pagamento foi confirmado com sucesso.</p>
+            <p>Suas cotas agora estão oficialmente pagas.</p>
+
+            <div class="numero-confirmado" id="numerosPagamentoConfirmado">
+                Carregando seus números...
+            </div>
+
+            <button class="btn-modal" onclick="fecharModal('modalPagamentoConfirmado')">
+                <i class="fa-solid fa-check"></i> Continuar
+            </button>
+        </div>
+    </div>
+
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        const PRECO_POR_COTA = 0.99;
+        const TOTAL_COTAS_GERAL = 3000;
+        const supabaseUrl = 'https://dqkrhbxaudgykzthytdp.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa3JoYnhhdWRneWt6dGh5dGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4NDg4NjMsImV4cCI6MjEwMzQyNDg2M30.4QjWXdwqf_XlUuaaI7cQMNl48W_u0BX9OwXmLnPoRow';
+
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Números da compra que está aguardando confirmação do pagamento.
+        let numerosAguardandoPagamento = [];
+        let intervaloPagamento = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            atualizarTotal();
+            carregarProgressoRifa();
+        });
+
+        function toggleMenu() {
+            document.getElementById('menuLateral').classList.toggle('ativo');
+            document.getElementById('menuBackdrop').classList.toggle('ativo');
+        }
+
+        async function carregarProgressoRifa() {
+            try {
+                // SOMENTE cotas com pagamento confirmado (PAID)
+                // entram na porcentagem e preenchem a barra.
+                const { count: cotasPagas, error } = await supabaseClient
+                    .from('tickets')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('raffle_id', 1)
+                    .eq('status', 'PAID');
+
+                if (error) return;
+
+                const cotasPreenchidas = cotasPagas || 0;
+                const porcentagemPreenchida = (cotasPreenchidas / TOTAL_COTAS_GERAL) * 100;
+                const porcentagemLimitada = Math.max(0, Math.min(100, porcentagemPreenchida));
+                const porcentagemFormatada = porcentagemLimitada.toFixed(2).replace('.', ',');
+
+                document.getElementById('porcentagemTexto').innerText = `${porcentagemFormatada}% VENDIDO`;
+                document.getElementById('barraPreenchimento').style.width = `${porcentagemLimitada}%`;
+
+            } catch (err) {
+                console.error('Erro na requisição de progresso:', err);
+            }
+        }
+
+        function atualizarTotal() {
+            const input = document.getElementById('qtdInput');
+            let qtd = parseInt(input.value) || 1;
+            if (qtd < 1) qtd = 1;
+            input.value = qtd;
+
+            const total = qtd * PRECO_POR_COTA;
+            document.getElementById('totalValor').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function selecionarPacote(qtd) {
+            document.getElementById('qtdInput').value = qtd;
+            atualizarTotal();
+        }
+
+        function alterarQuantidade(delta) {
+            const input = document.getElementById('qtdInput');
+            let qtd = (parseInt(input.value) || 0) + delta;
+            if (qtd >= 1) {
+                input.value = qtd;
+                atualizarTotal();
+            }
+        }
+
+        function fecharModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function abrirModalTermos() {
+            document.getElementById('modalTermos').style.display = 'flex';
+        }
+
+        function abrirModalConsulta() {
+            document.getElementById('modalConsulta').style.display = 'flex';
+            document.getElementById('resultadoConsulta').innerHTML = '';
+        }
+
+        async function abrirModalGanhadores() {
+            const modal = document.getElementById('modalGanhadores');
+            const container = document.getElementById('conteudoGanhadores');
+            modal.style.display = 'flex';
+            container.innerHTML = '<span style="color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Consultando dados do sorteio...</span>';
+
+            try {
+                const { data: raffle, error } = await supabaseClient
+                    .from('raffles')
+                    .select('status, winner_ticket_number, winner_name, drawn_at')
+                    .eq('id', 1)
+                    .single();
+
+                if (error || !raffle) {
+                    container.innerHTML = '<span style="color:#ef4444;">Erro ao buscar informações do sorteio.</span>';
+                    return;
+                }
+
+                if (raffle.status === 'DRAWN' && raffle.winner_ticket_number) {
+                    const dataFormatada = raffle.drawn_at ? new Date(raffle.drawn_at).toLocaleDateString('pt-BR', {
+                        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                    }) : '-';
+
+                    container.innerHTML = `
+                        <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.02) 100%); border: 1px solid var(--primary-gold); border-radius: var(--radius-md); padding: 20px; margin-top: 10px;">
+                            <i class="fa-solid fa-crown" style="font-size: 38px; color: var(--primary-gold); margin-bottom: 12px;"></i>
+                            <h4 style="font-size: 18px; color: #fff; margin-bottom: 4px; font-weight: 800;">Grande Vencedor!</h4>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Sorteio realizado em ${dataFormatada}</p>
+                            
+                            <div style="font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 10px;">
+                                ${raffle.winner_name || 'Ganhador Anônimo'}
+                            </div>
+                            <div style="display: inline-block; background: var(--primary-gold); color: #000; font-weight: 800; padding: 8px 18px; border-radius: 20px; font-size: 16px; box-shadow: var(--shadow-glow);">
+                                Cota Sorteada: #${String(raffle.winner_ticket_number).padStart(4, '0')}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div style="background: rgba(255, 255, 255, 0.03); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 25px 15px;">
+                            <i class="fa-solid fa-clock-rotate-left" style="font-size: 32px; color: var(--primary-gold); margin-bottom: 12px;"></i>
+                            <h4 style="font-size: 16px; color: #fff; margin-bottom: 6px; font-weight: 700;">Sorteio Ainda Não Realizado</h4>
+                            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                                A apuração será iniciada assim que a meta de cotas for atingida.<br>
+                                Adquira seus bilhetes e acompanhe por aqui!
+                            </p>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error('Erro ao consultar ganhadores:', err);
+                container.innerHTML = '<span style="color:#ef4444;">Erro de conexão. Tente novamente.</span>';
+            }
+        }
+
+        function iniciarCheckout() {
+            const qtd = document.getElementById('qtdInput').value;
+            document.getElementById('resumoCheckoutTexto').innerText = `Você está reservando ${qtd} cota(s). Preencha seus dados para continuar:`;
+            document.getElementById('modalCheckout').style.display = 'flex';
+        }
+
+        async function solicitarSenhaAdmin() {
+            const senhaDigitada = prompt("Digite a senha de acesso do administrador:");
+            const SENHA_MESTRE = "#SrS@_894kL!z";
+
+            if (senhaDigitada === SENHA_MESTRE) {
+                document.getElementById('painelAdmin').style.display = 'block';
+                await carregarTabelaVendasAdmin();
+                alert("Acesso autorizado! O painel de gestão está visível abaixo.");
+            } else if (senhaDigitada !== null) {
+                alert("Senha incorreta!");
+            }
+        }
+
+        async function carregarTabelaVendasAdmin() {
+            const tbody = document.getElementById('adminTabelaVendas');
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando registros...</td></tr>`;
+
+            const { data: vendas, error } = await supabaseClient
+                .from('tickets')
+                .select('ticket_number, status, buyer_name, buyer_phone')
+                .eq('raffle_id', 1)
+                .in('status', ['RESERVED', 'PAID'])
+                .order('ticket_number', { ascending: true });
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Erro ao carregar dados.</td></tr>`;
+                return;
+            }
+
+            if (!vendas || vendas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Nenhum bilhete reservado ou pago até o momento.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            vendas.forEach(v => {
+                const badgeClass = v.status === 'PAID' ? 'status-badge-paid' : 'status-badge-reserved';
+                let botoesAcao = '-';
+                if(v.status === 'RESERVED') {
+                    botoesAcao = `<button class="btn-aprovar" onclick="marcarComoPago(${v.ticket_number})"><i class="fa-solid fa-check"></i> Aprovar</button>`;
+                }
+
+                html += `
+                    <tr>
+                        <td><b>#${String(v.ticket_number).padStart(4, '0')}</b></td>
+                        <td><span class="${badgeClass}">${v.status}</span></td>
+                        <td>${v.buyer_name || '-'} <br><span style="font-size:10px;color:var(--text-muted);">${v.buyer_phone || '-'}</span></td>
+                        <td>${botoesAcao}</td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        async function marcarComoPago(ticketNumber) {
+            if(!confirm(`Deseja aprovar o pagamento da cota #${ticketNumber}?`)) return;
+
+            const { error } = await supabaseClient
+                .from('tickets')
+                .update({ status: 'PAID' })
+                .eq('raffle_id', 1)
+                .eq('ticket_number', ticketNumber);
+
+            if(error) {
+                alert('Erro ao atualizar o status do bilhete.');
+            } else {
+                alert(`Pagamento da cota #${ticketNumber} aprovado com sucesso!`);
+                carregarTabelaVendasAdmin();
+            }
+        }
+
+        async function confirmarReserva() {
+            const nome = document.getElementById('clienteNome').value.trim();
+            const telefone = document.getElementById('clienteTelefone').value.trim();
+
+            if (!nome || !telefone) {
+                alert('Por favor, preencha o Nome Completo e o Telefone.');
+                return;
+            }
+
+            const qtd = parseInt(document.getElementById('qtdInput').value) || 1;
+
+            const { data: disponiveis, error: errDisponiveis } = await supabaseClient
+                .from('tickets')
+                .select('ticket_number')
+                .eq('raffle_id', 1)
+                .eq('status', 'AVAILABLE')
+                .limit(qtd);
+
+            if (errDisponiveis || !disponiveis || disponiveis.length < qtd) {
+                alert('Desculpe, não há cotas livres suficientes para essa quantidade!');
+                return;
+            }
+            const numerosParaReservar = disponiveis.map(n => n.ticket_number);
+
+            const { error: errUpdate } = await supabaseClient
+                .from('tickets')
+                .update({ 
+                    status: 'RESERVED', 
+                    buyer_name: nome,
+                    buyer_phone: telefone,
+                    reserved_at: new Date(),
+                    expires_at: new Date(new Date().getTime() + 15 * 60000)
+                })
+                .eq('raffle_id', 1)
+                .in('ticket_number', numerosParaReservar);
+
+            if (errUpdate) {
+                alert('Erro ao reservar seus números. Tente novamente.');
+                return;
+            }
+
+            // As cotas estão apenas RESERVED neste momento.
+            // A barra só será atualizada quando o status virar PAID.
+            numerosAguardandoPagamento = [...numerosParaReservar];
+
+            fecharModal('modalCheckout');
+            
+            const total = (numerosParaReservar.length * PRECO_POR_COTA).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('pixTotalValor').innerText = total;
+
+            const grid = document.getElementById('pixNumerosReservados');
+            grid.innerHTML = numerosParaReservar.map(n => `<span class="number-tag">#${String(n).padStart(4, '0')}</span>`).join('');
+
+            document.getElementById('modalPix').style.display = 'flex';
+        }
+
+        function iniciarMonitoramentoPagamento() {
+            pararMonitoramentoPagamento();
+
+            if (!numerosAguardandoPagamento.length) return;
+
+            verificarPagamentoConfirmado();
+
+            // Consulta o Supabase a cada 3 segundos.
+            intervaloPagamento = setInterval(verificarPagamentoConfirmado, 3000);
+        }
+
+        function pararMonitoramentoPagamento() {
+            if (intervaloPagamento) {
+                clearInterval(intervaloPagamento);
+                intervaloPagamento = null;
+            }
+        }
+
+        async function verificarPagamentoConfirmado() {
+            if (!numerosAguardandoPagamento.length) return;
+
+            try {
+                const { data: ticketsAtualizados, error } = await supabaseClient
+                    .from('tickets')
+                    .select('ticket_number, status')
+                    .eq('raffle_id', 1)
+                    .in('ticket_number', numerosAguardandoPagamento);
+
+                if (error || !ticketsAtualizados) return;
+
+                const todosPagos =
+                    ticketsAtualizados.length === numerosAguardandoPagamento.length &&
+                    ticketsAtualizados.every(ticket => ticket.status === 'PAID');
+
+                if (!todosPagos) return;
+
+                pararMonitoramentoPagamento();
+
+                const numerosFormatados = numerosAguardandoPagamento
+                    .map(n => `#${String(n).padStart(4, '0')}`)
+                    .join(' • ');
+
+                document.getElementById('numerosPagamentoConfirmado').innerText = numerosFormatados;
+
+                fecharModal('modalPix');
+                document.getElementById('modalPagamentoConfirmado').style.display = 'flex';
+
+                // Somente depois da confirmação o progresso é atualizado.
+                await carregarProgressoRifa();
+
+                numerosAguardandoPagamento = [];
+            } catch (err) {
+                console.error('Erro ao verificar confirmação do pagamento:', err);
+            }
+        }
+
+        function copiarPix() {
+            const chave = document.getElementById('chavePixTexto').innerText;
+            navigator.clipboard.writeText(chave);
+            alert('Chave PIX copiada para a área de transferência!');
+        }
+
+        async function buscarMeusNumeros() {
+            const tel = document.getElementById('consultaTelefone').value.trim();
+            const container = document.getElementById('resultadoConsulta');
+            container.innerHTML = '<span style="color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Buscando...</span>';
+
+            if (!tel) {
+                container.innerHTML = '<span style="color:#ef4444;">Digite um telefone válido.</span>';
+                return;
+            }
+
+            const { data: bilhetes, error: errBilhetes } = await supabaseClient
+                .from('tickets')
+                .select('ticket_number, status, buyer_name')
+                .eq('raffle_id', 1)
+                .eq('buyer_phone', tel);
+
+            if (errBilhetes || !bilhetes || bilhetes.length === 0) {
+                container.innerHTML = '<span style="color:var(--text-muted);">Nenhum bilhete encontrado para este telefone.</span>';
+                return;
+            }
+
+            let html = `<p style="font-size:14px; margin-bottom: 8px;">Olá, <b>${bilhetes[0].buyer_name}</b>! Seus bilhetes:</p><div class="numbers-grid">`;
+            bilhetes.forEach(b => {
+                const corStatus = b.status === 'PAID' ? 'var(--primary-green)' : 'var(--primary-gold)';
+                const textCor = b.status === 'PAID' ? '#fff' : '#000';
+                html += `<span class="number-tag" style="background:${corStatus}; color:${textCor};">#${String(b.ticket_number).padStart(4, '0')} (${b.status})</span>`;
+            });
+            html += `</div>`;
+
+            container.innerHTML = html;
+        }
+
+        async function realizarSorteioInterno(raffleId) {
+            try {
+                const { data: cotasPagas, error: errCotas } = await supabaseClient
+                    .from('tickets')
+                    .select('ticket_number, buyer_name, buyer_phone')
+                    .eq('raffle_id', raffleId)
+                    .eq('status', 'PAID');
+
+                if (errCotas) {
+                    alert('Erro ao carregar cotas pagas para o sorteio.');
+                    return;
+                }
+
+                if (!cotasPagas || cotasPagas.length === 0) {
+                    alert('Não há cotas com status PAID (Pagas) suficientes para realizar o sorteio! Aprove os pagamentos pendentes primeiro.');
+                    return;
+                }
+
+                const numerosDisponiveis = cotasPagas.map(c => c.ticket_number);
+
+                const arrayAleatorio = new Uint32Array(1);
+                window.crypto.getRandomValues(arrayAleatorio);
+                const randomIndex = arrayAleatorio[0] % numerosDisponiveis.length;
+                const numeroVencedor = numerosDisponiveis[randomIndex];
+
+                const ganhador = cotasPagas.find(c => c.ticket_number === numeroVencedor);
+
+                const { error: errUpdateRaffle } = await supabaseClient
+                    .from('raffles')
+                    .update({
+                        status: 'DRAWN',
+                        winner_ticket_number: numeroVencedor,
+                        winner_name: ganhador.buyer_name,
+                        drawn_at: new Date()
+                    })
+                    .eq('id', raffleId);
+
+                if (errUpdateRaffle) {
+                    alert('Erro ao salvar o vencedor no banco de dados.');
+                    return;
+                }
+
+                const seedHash = 'audit_hash_' + Date.now() + '_' + numeroVencedor;
+                await supabaseClient
+                    .from('draw_logs')
+                    .insert([{
+                        raffle_id: raffleId,
+                        drawn_ticket_number: numeroVencedor,
+                        seed_hash: seedHash
+                    }]);
+
+                alert(`🎉 Sorteio Realizado com Sucesso!\n\nNúmero Ganhador: #${String(numeroVencedor).padStart(4, '0')}\nNome: ${ganhador.buyer_name}`);
+                location.reload();
+
+            } catch (err) {
+                console.error('Erro crítico no sorteio:', err);
+                alert('Ocorreu um erro ao realizar o sorteio.');
+            }
+        }
+    </script>
+</body>
+</html>

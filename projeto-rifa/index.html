@@ -928,7 +928,7 @@
         </a>
 
         <div class="menu-section-label">ADMINISTRAÇÃO</div>
-        <a href="#" onclick="toggleMenu(); solicitarSenhaAdmin();" class="menu-item admin-item">
+        <a href="#" onclick="toggleMenu(); abrirLoginAdmin(); return false;" class="menu-item admin-item">
             <div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div>
             <span>Painel Admin</span>
         </a>
@@ -991,6 +991,9 @@
                 <i class="fa-solid fa-shield-halved"></i> Painel do Administrador
             </p>
             <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 12px 0;">Gestão e controle de bilhetes em tempo real:</p>
+            <button class="btn-modal" style="width:auto;padding:8px 12px;margin:0 0 14px 0;" onclick="sairDoAdmin()">
+                <i class="fa-solid fa-right-from-bracket"></i> Sair do painel
+            </button>
             
             <div class="admin-table-container">
                 <table class="admin-table">
@@ -1011,6 +1014,31 @@
             <button class="btn-sorteio" onclick="realizarSorteioInterno(1)">
                 <i class="fa-solid fa-dice"></i> Realizar Sorteio Seguro entre os Pagos
             </button>
+        </div>
+    </div>
+
+    <!-- MODAL ADMIN: AUTENTICAÇÃO SEGURA VIA SUPABASE AUTH -->
+    <div class="modal-overlay" id="modalLoginAdmin">
+        <div class="modal-content" style="text-align:center;">
+            <span class="modal-close" onclick="fecharModal('modalLoginAdmin')"><i class="fa-solid fa-xmark"></i></span>
+            <h3 style="color: var(--primary-gold); margin-top:0; font-size:20px;">
+                <i class="fa-solid fa-shield-halved"></i> Acesso Administrativo
+            </h3>
+            <p style="font-size:13px;color:var(--text-muted);line-height:1.5;">
+                Entre com o e-mail e a senha cadastrados no Supabase Auth.
+            </p>
+            <div class="form-group">
+                <label><i class="fa-solid fa-envelope"></i> E-mail do administrador</label>
+                <input type="email" id="adminEmail" autocomplete="username" placeholder="admin@exemplo.com">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-lock"></i> Senha</label>
+                <input type="password" id="adminPassword" autocomplete="current-password" placeholder="Sua senha">
+            </div>
+            <button class="btn-modal" onclick="entrarComoAdmin()">
+                <i class="fa-solid fa-right-to-bracket"></i> Entrar
+            </button>
+            <p id="adminLoginMensagem" style="font-size:12px;margin-top:12px;color:#ef4444;"></p>
         </div>
     </div>
 
@@ -1086,6 +1114,10 @@
                 <label><i class="fa-solid fa-id-card"></i> CPF</label>
                 <input type="text" id="consultaCpf" placeholder="000.000.000-00" maxlength="14" oninput="formatarCPF(this)">
             </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-envelope"></i> E-mail usado na reserva</label>
+                <input type="email" id="consultaEmail" placeholder="seuemail@exemplo.com">
+            </div>
             <button class="btn-modal" onclick="buscarMeusNumeros()">
                 <i class="fa-solid fa-search"></i> Buscar Bilhetes
             </button>
@@ -1155,6 +1187,7 @@
         const PRECO_POR_COTA = 0.49;
         const TOTAL_COTAS_GERAL = 6000;
         const supabaseUrl = 'https://dqkrhbxaudgykzthytdp.supabase.co';
+        // Esta é a chave pública ANON do Supabase. Nunca coloque service_role/secret keys no HTML.
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa3JoYnhhdWRneWt6dGh5dGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4NDg4NjMsImV4cCI6MjEwMzQyNDg2M30.4QjWXdwqf_XlUuaaI7cQMNl48W_u0BX9OwXmLnPoRow';
 
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -1162,6 +1195,13 @@
         // Números da compra que está aguardando confirmação do pagamento.
         let numerosAguardandoPagamento = [];
         let intervaloPagamento = null;
+        let tokenReservaAtual = null;
+
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (!session) {
+                document.getElementById('painelAdmin').style.display = 'none';
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             atualizarTotal();
@@ -1175,24 +1215,16 @@
 
         async function carregarProgressoRifa() {
             try {
-                // SOMENTE cotas com pagamento confirmado (PAID)
-                // entram na porcentagem e preenchem a barra.
-                const { count: cotasPagas, error } = await supabaseClient
-                    .from('tickets')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('raffle_id', 1)
-                    .eq('status', 'PAID');
+                const { data, error } = await supabaseClient.rpc('obter_progresso_publico', { p_raffle_id: 1 });
+                if (error) throw error;
 
-                if (error) return;
-
-                const cotasPreenchidas = cotasPagas || 0;
+                const cotasPreenchidas = Number(data?.cotas_pagas || 0);
                 const porcentagemPreenchida = (cotasPreenchidas / TOTAL_COTAS_GERAL) * 100;
                 const porcentagemLimitada = Math.max(0, Math.min(100, porcentagemPreenchida));
                 const porcentagemFormatada = porcentagemLimitada.toFixed(2).replace('.', ',');
 
                 document.getElementById('porcentagemTexto').innerText = `${porcentagemFormatada}%`;
                 document.getElementById('barraPreenchimento').style.width = `${porcentagemLimitada}%`;
-
             } catch (err) {
                 console.error('Erro na requisição de progresso:', err);
             }
@@ -1242,12 +1274,7 @@
             container.innerHTML = '<span style="color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Consultando dados do sorteio...</span>';
 
             try {
-                const { data: raffle, error } = await supabaseClient
-                    .from('raffles')
-                    .select('status, winner_ticket_number, winner_name, drawn_at')
-                    .eq('id', 1)
-                    .single();
-
+                const { data: raffle, error } = await supabaseClient.rpc('obter_resultado_publico', { p_raffle_id: 1 });
                 if (error || !raffle) {
                     container.innerHTML = '<span style="color:#ef4444;">Erro ao buscar informações do sorteio.</span>';
                     return;
@@ -1260,29 +1287,19 @@
 
                     container.innerHTML = `
                         <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.02) 100%); border: 1px solid var(--primary-gold); border-radius: var(--radius-md); padding: 20px; margin-top: 10px;">
-                            <i class="fa-solid fa-crown" style="font-size: 38px; color: var(--primary-gold); margin-bottom: 12px;"></i>
-                            <h4 style="font-size: 18px; color: #fff; margin-bottom: 4px; font-weight: 800;">Grande Vencedor!</h4>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Sorteio realizado em ${dataFormatada}</p>
-                            
-                            <div style="font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 10px;">
-                                ${raffle.winner_name || 'Ganhador Anônimo'}
-                            </div>
-                            <div style="display: inline-block; background: var(--primary-gold); color: #000; font-weight: 800; padding: 8px 18px; border-radius: 20px; font-size: 16px; box-shadow: var(--shadow-glow);">
-                                Cota Sorteada: #${String(raffle.winner_ticket_number)}
-                            </div>
-                        </div>
-                    `;
+                            <i class="fa-solid fa-crown" style="font-size:38px;color:var(--primary-gold);margin-bottom:12px;"></i>
+                            <h4 style="font-size:18px;color:#fff;margin-bottom:4px;font-weight:800;">Grande Vencedor!</h4>
+                            <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Sorteio realizado em ${dataFormatada}</p>
+                            <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:10px;">${escaparHtml(raffle.winner_name || 'Ganhador Anônimo')}</div>
+                            <div style="display:inline-block;background:var(--primary-gold);color:#000;font-weight:800;padding:8px 18px;border-radius:20px;font-size:16px;">Cota Sorteada: #${raffle.winner_ticket_number}</div>
+                        </div>`;
                 } else {
                     container.innerHTML = `
-                        <div style="background: rgba(255, 255, 255, 0.03); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 25px 15px;">
-                            <i class="fa-solid fa-clock-rotate-left" style="font-size: 32px; color: var(--primary-gold); margin-bottom: 12px;"></i>
-                            <h4 style="font-size: 16px; color: #fff; margin-bottom: 6px; font-weight: 700;">Sorteio Ainda Não Realizado</h4>
-                            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-                                A apuração será iniciada assim que a meta de cotas for atingida.<br>
-                                Adquira seus bilhetes e acompanhe por aqui!
-                            </p>
-                        </div>
-                    `;
+                        <div style="background:rgba(255,255,255,.03);border:1px dashed var(--border-color);border-radius:var(--radius-md);padding:25px 15px;">
+                            <i class="fa-solid fa-clock-rotate-left" style="font-size:32px;color:var(--primary-gold);margin-bottom:12px;"></i>
+                            <h4 style="font-size:16px;color:#fff;margin-bottom:6px;font-weight:700;">Sorteio Ainda Não Realizado</h4>
+                            <p style="font-size:13px;color:var(--text-muted);line-height:1.5;">A apuração será iniciada assim que a meta de cotas for atingida.<br>Adquira seus bilhetes e acompanhe por aqui!</p>
+                        </div>`;
                 }
             } catch (err) {
                 console.error('Erro ao consultar ganhadores:', err);
@@ -1296,76 +1313,98 @@
             document.getElementById('modalCheckout').style.display = 'flex';
         }
 
-        async function solicitarSenhaAdmin() {
-            const senhaDigitada = prompt("Digite a senha de acesso do administrador:");
-            const SENHA_MESTRE = "#SrS@_894kL!z";
+        function abrirLoginAdmin() {
+            document.getElementById('adminLoginMensagem').innerText = '';
+            document.getElementById('modalLoginAdmin').style.display = 'flex';
+        }
 
-            if (senhaDigitada === SENHA_MESTRE) {
-                document.getElementById('painelAdmin').style.display = 'block';
-                await carregarTabelaVendasAdmin();
-                alert("Acesso autorizado! O painel de gestão está visível abaixo.");
-            } else if (senhaDigitada !== null) {
-                alert("Senha incorreta!");
+        async function entrarComoAdmin() {
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            const mensagem = document.getElementById('adminLoginMensagem');
+            mensagem.innerText = '';
+
+            if (!email || !password) {
+                mensagem.innerText = 'Informe o e-mail e a senha.';
+                return;
             }
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error || !data?.user) {
+                mensagem.innerText = 'E-mail ou senha inválidos.';
+                return;
+            }
+
+            // A autenticação só libera o painel se o banco confirmar que este usuário é administrador.
+            const { data: adminOk, error: adminError } = await supabaseClient.rpc('verificar_admin_atual');
+            if (adminError || adminOk !== true) {
+                await supabaseClient.auth.signOut();
+                mensagem.innerText = 'Este usuário não possui permissão de administrador.';
+                return;
+            }
+
+            fecharModal('modalLoginAdmin');
+            document.getElementById('painelAdmin').style.display = 'block';
+            await carregarTabelaVendasAdmin();
+            alert('Acesso autorizado.');
+        }
+
+        async function sairDoAdmin() {
+            await supabaseClient.auth.signOut();
+            document.getElementById('painelAdmin').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
         }
 
         async function carregarTabelaVendasAdmin() {
             const tbody = document.getElementById('adminTabelaVendas');
             tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando registros...</td></tr>`;
 
-            const { data: vendas, error } = await supabaseClient
-                .from('tickets')
-                .select('ticket_number, status, buyer_name, buyer_phone, buyer_cpf, buyer_email')
-                .eq('raffle_id', 1)
-                .in('status', ['RESERVED', 'PAID'])
-                .order('ticket_number', { ascending: true });
+            const { data: vendas, error } = await supabaseClient.rpc('admin_listar_vendas', { p_raffle_id: 1 });
 
             if (error) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Erro ao carregar dados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;">Sessão sem permissão ou erro ao carregar dados.</td></tr>`;
                 return;
             }
 
             if (!vendas || vendas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Nenhum bilhete reservado ou pago até o momento.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">Nenhum bilhete reservado ou pago até o momento.</td></tr>`;
                 return;
             }
 
             let html = '';
             vendas.forEach(v => {
                 const badgeClass = v.status === 'PAID' ? 'status-badge-paid' : 'status-badge-reserved';
-                let botoesAcao = '-';
-                if(v.status === 'RESERVED') {
-                    botoesAcao = `<button class="btn-aprovar" onclick="marcarComoPago(${v.ticket_number})"><i class="fa-solid fa-check"></i> Aprovar</button>`;
-                }
+                const botoesAcao = v.status === 'RESERVED'
+                    ? `<button class="btn-aprovar" onclick="marcarComoPago(${v.ticket_number})"><i class="fa-solid fa-check"></i> Aprovar</button>`
+                    : '-';
 
                 html += `
                     <tr>
-                        <td><b>#${String(v.ticket_number)}</b></td>
+                        <td><b>#${v.ticket_number}</b></td>
                         <td><span class="${badgeClass}">${v.status}</span></td>
-                        <td>${v.buyer_name || '-'} <br><span style="font-size:10px;color:var(--text-muted);">${v.buyer_phone || '-'}<br>${v.buyer_email || '-'}</span></td>
+                        <td>${escaparHtml(v.buyer_name || '-')}<br><span style="font-size:10px;color:var(--text-muted);">${escaparHtml(v.buyer_phone || '-')}<br>${escaparHtml(v.buyer_email || '-')}</span></td>
                         <td>${botoesAcao}</td>
-                    </tr>
-                `;
+                    </tr>`;
             });
-
             tbody.innerHTML = html;
         }
 
         async function marcarComoPago(ticketNumber) {
-            if(!confirm(`Deseja aprovar o pagamento da cota #${ticketNumber}?`)) return;
+            if (!confirm(`Deseja aprovar o pagamento da cota #${ticketNumber}?`)) return;
 
-            const { error } = await supabaseClient
-                .from('tickets')
-                .update({ status: 'PAID' })
-                .eq('raffle_id', 1)
-                .eq('ticket_number', ticketNumber);
+            const { data, error } = await supabaseClient.rpc('admin_marcar_pago', {
+                p_raffle_id: 1,
+                p_ticket_number: ticketNumber
+            });
 
-            if(error) {
-                alert('Erro ao atualizar o status do bilhete.');
-            } else {
-                alert(`Pagamento da cota #${ticketNumber} aprovado com sucesso!`);
-                carregarTabelaVendasAdmin();
+            if (error || data !== true) {
+                alert('Não foi possível aprovar este pagamento.');
+                return;
             }
+
+            alert(`Pagamento da cota #${ticketNumber} aprovado com sucesso!`);
+            await carregarTabelaVendasAdmin();
+            await carregarProgressoRifa();
         }
 
         async function confirmarReserva() {
@@ -1380,52 +1419,37 @@
             }
 
             const qtd = parseInt(document.getElementById('qtdInput').value) || 1;
-
-            const { data: disponiveis, error: errDisponiveis } = await supabaseClient
-                .from('tickets')
-                .select('ticket_number')
-                .eq('raffle_id', 1)
-                .eq('status', 'AVAILABLE')
-                .limit(qtd);
-
-            if (errDisponiveis || !disponiveis || disponiveis.length < qtd) {
-                alert('Desculpe, não há cotas livres suficientes para essa quantidade!');
-                return;
-            }
-            const numerosParaReservar = disponiveis.map(n => n.ticket_number);
-
-            const { error: errUpdate } = await supabaseClient
-                .from('tickets')
-                .update({ 
-                    status: 'RESERVED', 
-                    buyer_name: nome,
-                    buyer_phone: telefone,
-                    buyer_cpf: cpf,
-                    buyer_email: email,
-                    reserved_at: new Date(),
-                    expires_at: new Date(new Date().getTime() + 15 * 60000)
-                })
-                .eq('raffle_id', 1)
-                .in('ticket_number', numerosParaReservar);
-
-            if (errUpdate) {
-                alert('Erro ao reservar seus números. Tente novamente.');
+            if (qtd < 1 || qtd > 300) {
+                alert('A quantidade deve estar entre 1 e 300 cotas.');
                 return;
             }
 
-            // As cotas estão apenas RESERVED neste momento.
-            // A barra só será atualizada quando o status virar PAID.
+            const { data: reserva, error } = await supabaseClient.rpc('reservar_cotas', {
+                p_raffle_id: 1,
+                p_quantidade: qtd,
+                p_nome: nome,
+                p_telefone: telefone,
+                p_cpf: cpf,
+                p_email: email
+            });
+
+            if (error || !reserva?.ticket_numbers?.length) {
+                alert(error?.message || 'Não foi possível reservar as cotas. Tente novamente.');
+                return;
+            }
+
+            const numerosParaReservar = reserva.ticket_numbers;
             numerosAguardandoPagamento = [...numerosParaReservar];
+            tokenReservaAtual = reserva.reservation_token;
 
             fecharModal('modalCheckout');
-            
             const total = (numerosParaReservar.length * PRECO_POR_COTA).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('pixTotalValor').innerText = total;
 
             const grid = document.getElementById('pixNumerosReservados');
             grid.innerHTML = numerosParaReservar.map(n => `<span class="number-tag">#${String(n)}</span>`).join('');
-
             document.getElementById('modalPix').style.display = 'flex';
+            iniciarMonitoramentoPagamento();
         }
 
         function iniciarMonitoramentoPagamento() {
@@ -1450,17 +1474,15 @@
             if (!numerosAguardandoPagamento.length) return;
 
             try {
-                const { data: ticketsAtualizados, error } = await supabaseClient
-                    .from('tickets')
-                    .select('ticket_number, status')
-                    .eq('raffle_id', 1)
-                    .in('ticket_number', numerosAguardandoPagamento);
+                if (!tokenReservaAtual) return;
 
-                if (error || !ticketsAtualizados) return;
+                const { data: statusReserva, error } = await supabaseClient.rpc('consultar_status_reserva', {
+                    p_reservation_token: tokenReservaAtual
+                });
 
-                const todosPagos =
-                    ticketsAtualizados.length === numerosAguardandoPagamento.length &&
-                    ticketsAtualizados.every(ticket => ticket.status === 'PAID');
+                if (error || !statusReserva) return;
+
+                const todosPagos = statusReserva.todos_pagos === true;
 
                 if (!todosPagos) return;
 
@@ -1479,6 +1501,7 @@
                 await carregarProgressoRifa();
 
                 numerosAguardandoPagamento = [];
+                tokenReservaAtual = null;
             } catch (err) {
                 console.error('Erro ao verificar confirmação do pagamento:', err);
             }
@@ -1531,12 +1554,18 @@
                 return;
             }
 
-            const { data: bilhetes, error: errBilhetes } = await supabaseClient
-                .from('tickets')
-                .select('ticket_number, status, buyer_name, buyer_phone, buyer_cpf, buyer_email')
-                .eq('raffle_id', 1)
-                .eq('buyer_phone', document.getElementById('consultaTelefone').value.trim())
-                .eq('buyer_cpf', document.getElementById('consultaCpf').value.trim());
+            const email = document.getElementById('consultaEmail')?.value.trim() || '';
+            if (!email) {
+                container.innerHTML = '<span style="color:#ef4444;">Informe também o e-mail usado na reserva.</span>';
+                return;
+            }
+
+            const { data: bilhetes, error: errBilhetes } = await supabaseClient.rpc('consultar_meus_bilhetes', {
+                p_raffle_id: 1,
+                p_telefone: document.getElementById('consultaTelefone').value.trim(),
+                p_cpf: document.getElementById('consultaCpf').value.trim(),
+                p_email: email
+            });
 
             if (errBilhetes || !bilhetes || bilhetes.length === 0) {
                 container.innerHTML = '<span style="color:var(--text-muted);">Nenhum bilhete encontrado com esses dados.</span>';
@@ -1544,13 +1573,13 @@
             }
 
             const primeiro = bilhetes[0];
-            let html = `<p style="font-size:14px; margin-bottom:12px;">Olá, <b>${escaparHtml(primeiro.buyer_name)}</b>!</p>`;
-            html += `<div style="text-align:left; font-size:13px; color:var(--text-muted); margin-bottom:12px; line-height:1.8;">CPF: <b style="color:#fff;">${mascararCPF(primeiro.buyer_cpf)}</b><br>E-mail: <b style="color:#fff;">${escaparHtml(primeiro.buyer_email || '-')}</b></div>`;
-            html += '<p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">Seus bilhetes:</p><div class="numbers-grid">';
+            let html = `<p style="font-size:14px;margin-bottom:12px;">Olá, <b>${escaparHtml(primeiro.buyer_name)}</b>!</p>`;
+            html += `<div style="text-align:left;font-size:13px;color:var(--text-muted);margin-bottom:12px;line-height:1.8;">CPF: <b style="color:#fff;">${escaparHtml(primeiro.cpf_mascarado)}</b><br>E-mail: <b style="color:#fff;">${escaparHtml(primeiro.buyer_email || '-')}</b></div>`;
+            html += '<p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Seus bilhetes:</p><div class="numbers-grid">';
             bilhetes.forEach(b => {
                 const corStatus = b.status === 'PAID' ? 'var(--primary-green)' : 'var(--primary-gold)';
                 const textCor = b.status === 'PAID' ? '#fff' : '#000';
-                html += `<span class="number-tag" style="background:${corStatus}; color:${textCor};">#${b.ticket_number} (${b.status})</span>`;
+                html += `<span class="number-tag" style="background:${corStatus};color:${textCor};">#${b.ticket_number} (${b.status})</span>`;
             });
             html += '</div>';
             container.innerHTML = html;
@@ -1559,12 +1588,7 @@
         }
 
         async function verificarResultadoSorteio(bilhetes) {
-            const { data: raffle, error } = await supabaseClient
-                .from('raffles')
-                .select('status, winner_ticket_number, winner_name, drawn_at')
-                .eq('id', 1)
-                .single();
-
+            const { data: raffle, error } = await supabaseClient.rpc('obter_resultado_publico', { p_raffle_id: 1 });
             if (error || !raffle || raffle.status !== 'DRAWN' || !raffle.winner_ticket_number) return;
 
             const pagos = bilhetes.filter(b => b.status === 'PAID');
@@ -1598,63 +1622,17 @@
         }
 
         async function realizarSorteioInterno(raffleId) {
-            try {
-                const { data: cotasPagas, error: errCotas } = await supabaseClient
-                    .from('tickets')
-                    .select('ticket_number, buyer_name, buyer_phone')
-                    .eq('raffle_id', raffleId)
-                    .eq('status', 'PAID');
+            if (!confirm('Tem certeza que deseja realizar o sorteio? Esta ação será registrada no banco e não deve ser repetida.')) return;
 
-                if (errCotas) {
-                    alert('Erro ao carregar cotas pagas para o sorteio.');
-                    return;
-                }
+            const { data, error } = await supabaseClient.rpc('admin_realizar_sorteio', { p_raffle_id: raffleId });
 
-                if (!cotasPagas || cotasPagas.length === 0) {
-                    alert('Não há cotas com status PAID (Pagas) suficientes para realizar o sorteio! Aprove os pagamentos pendentes primeiro.');
-                    return;
-                }
-
-                const numerosDisponiveis = cotasPagas.map(c => c.ticket_number);
-
-                const arrayAleatorio = new Uint32Array(1);
-                window.crypto.getRandomValues(arrayAleatorio);
-                const randomIndex = arrayAleatorio[0] % numerosDisponiveis.length;
-                const numeroVencedor = numerosDisponiveis[randomIndex];
-
-                const ganhador = cotasPagas.find(c => c.ticket_number === numeroVencedor);
-
-                const { error: errUpdateRaffle } = await supabaseClient
-                    .from('raffles')
-                    .update({
-                        status: 'DRAWN',
-                        winner_ticket_number: numeroVencedor,
-                        winner_name: ganhador.buyer_name,
-                        drawn_at: new Date()
-                    })
-                    .eq('id', raffleId);
-
-                if (errUpdateRaffle) {
-                    alert('Erro ao salvar o vencedor no banco de dados.');
-                    return;
-                }
-
-                const seedHash = 'audit_hash_' + Date.now() + '_' + numeroVencedor;
-                await supabaseClient
-                    .from('draw_logs')
-                    .insert([{
-                        raffle_id: raffleId,
-                        drawn_ticket_number: numeroVencedor,
-                        seed_hash: seedHash
-                    }]);
-
-                alert(`🎉 Sorteio Realizado com Sucesso!\n\nNúmero Ganhador: #${String(numeroVencedor)}\nNome: ${ganhador.buyer_name}`);
-                location.reload();
-
-            } catch (err) {
-                console.error('Erro crítico no sorteio:', err);
-                alert('Ocorreu um erro ao realizar o sorteio.');
+            if (error || !data?.success) {
+                alert(error?.message || data?.message || 'Não foi possível realizar o sorteio.');
+                return;
             }
+
+            alert(`🎉 Sorteio realizado com sucesso!\n\nNúmero ganhador: #${data.winner_ticket_number}\nNome: ${data.winner_name || 'Ganhador Anônimo'}`);
+            location.reload();
         }
     </script>
 </body>

@@ -823,6 +823,48 @@
             color: #fff;
             font-weight: 700;
         }
+
+        .termos-box {
+            background: rgba(30, 41, 59, 0.55);
+            border-radius: 18px;
+            padding: 24px 20px;
+            max-height: 430px;
+            overflow-y: auto;
+            text-align: left;
+            color: #e2e8f0;
+            font-size: 14px;
+            line-height: 1.7;
+            margin-top: 15px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        .termos-box p { margin-bottom: 22px; }
+        .termos-box p:last-child { margin-bottom: 0; }
+
+        .resultado-sorteio {
+            text-align: center;
+            padding: 30px 24px;
+        }
+        .resultado-icone {
+            width: 88px; height: 88px; margin: 0 auto 18px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 42px;
+        }
+        .resultado-vencedor .resultado-icone {
+            background: rgba(16,185,129,.14); border: 3px solid var(--primary-green);
+            color: var(--primary-green); box-shadow: 0 0 28px var(--green-glow);
+        }
+        .resultado-perdedor .resultado-icone {
+            background: rgba(245,158,11,.10); border: 3px solid var(--primary-gold);
+            color: var(--primary-gold);
+        }
+        .resultado-sorteio h3 { font-size: 25px; margin-bottom: 10px; }
+        .resultado-vencedor h3 { color: var(--primary-green); }
+        .resultado-perdedor h3 { color: #f59e0b; }
+        .resultado-sorteio p { color: var(--text-muted); line-height: 1.6; font-size: 14px; }
+        .resultado-numeros {
+            margin-top: 18px; padding: 14px; border-radius: var(--radius-md);
+            background: rgba(255,255,255,.04); border: 1px solid var(--border-color);
+            color: #fff; font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -910,7 +952,7 @@
         </div>
 
         <div class="price-tag">
-            <span>por apenas</span> <span class="badge">R$ 0,99</span>
+            <span>por apenas</span> <span class="badge">R$ 0,49</span>
         </div>
 
         <!-- SEÇÃO DE SELEÇÃO RÁPIDA -->
@@ -987,7 +1029,15 @@
             </div>
             <div class="form-group">
                 <label><i class="fa-brands fa-whatsapp"></i> Telefone (WhatsApp)</label>
-                <input type="tel" id="clienteTelefone" placeholder="(83) 99999-9999">
+                <input type="tel" id="clienteTelefone" placeholder="(83) 99999-9999" maxlength="15" oninput="formatarTelefone(this)">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-id-card"></i> CPF</label>
+                <input type="text" id="clienteCpf" placeholder="000.000.000-00" maxlength="14" oninput="formatarCPF(this)">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-envelope"></i> E-mail</label>
+                <input type="email" id="clienteEmail" placeholder="seuemail@exemplo.com">
             </div>
 
             <button class="btn-modal" onclick="confirmarReserva()">
@@ -1026,10 +1076,15 @@
             <h3 style="color: var(--primary-gold); margin-top:0; font-size: 20px; display: flex; align-items: center; gap: 8px;">
                 <i class="fa-solid fa-magnifying-glass"></i> Meus Números
             </h3>
-            <p style="font-size:13px; color: var(--text-muted); margin-top: 4px; margin-bottom: 18px;">Informe o telefone utilizado na compra:</p>
+            <p style="font-size:13px; color: var(--text-muted); margin-top: 4px; margin-bottom: 18px;">Informe os dados utilizados na compra para consultar seus números:</p>
 
             <div class="form-group">
-                <input type="tel" id="consultaTelefone" placeholder="Digite seu telefone com DDD...">
+                <label><i class="fa-brands fa-whatsapp"></i> Telefone (WhatsApp)</label>
+                <input type="tel" id="consultaTelefone" placeholder="(83) 99999-9999" maxlength="15" oninput="formatarTelefone(this)">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-id-card"></i> CPF</label>
+                <input type="text" id="consultaCpf" placeholder="000.000.000-00" maxlength="14" oninput="formatarCPF(this)">
             </div>
             <button class="btn-modal" onclick="buscarMeusNumeros()">
                 <i class="fa-solid fa-search"></i> Buscar Bilhetes
@@ -1046,10 +1101,11 @@
             <h3 style="color: var(--primary-gold); margin-top:0; font-size: 20px; display: flex; align-items: center; gap: 8px;">
                 <i class="fa-solid fa-file-lines"></i> Termos de Uso
             </h3>
-            <div style="font-size:13px; color: var(--text-muted); max-height: 250px; overflow-y: auto; text-align: left; line-height: 1.6; margin-top: 15px;">
-                <p style="margin-bottom: 8px;">1. O sorteio é realizado com base nas cotas disponíveis numeradas de 1 a 3.000.</p>
-                <p style="margin-bottom: 8px;">2. A reserva de bilhetes tem validade temporária até a confirmação do pagamento via PIX.</p>
-                <p>3. Em caso de dúvidas, entre em contato diretamente com a organização do evento.</p>
+            <div class="termos-box">
+                <p>“Na qualidade de Subscritor, aprovado conforme o processo que consta no documento:</p>
+                <p>(i) Tenho conhecimento de que a contratação implica na automática adesão a todos os termos das Condições Gerais e do regulamento, os quais estão disponíveis para minha consulta.</p>
+                <p>(ii) O contemplado poderá autorizar, de forma gratuita, o direito de uso de seu nome, imagem e voz, pelo período de um ano, para fins de divulgação da campanha.</p>
+                <p>(iii) Concordo com os Termos de Uso e a Política de Privacidade.”</p>
             </div>
         </div>
     </div>
@@ -1087,12 +1143,17 @@
         </div>
     </div>
 
+    <!-- MODAL 7: RESULTADO DO SORTEIO -->
+    <div class="modal-overlay" id="modalResultadoSorteio">
+        <div class="modal-content resultado-sorteio" id="conteudoResultadoSorteio"></div>
+    </div>
+
     <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
-        const PRECO_POR_COTA = 0.99;
-        const TOTAL_COTAS_GERAL = 3000;
+        const PRECO_POR_COTA = 0.49;
+        const TOTAL_COTAS_GERAL = 6000;
         const supabaseUrl = 'https://dqkrhbxaudgykzthytdp.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa3JoYnhhdWRneWt6dGh5dGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4NDg4NjMsImV4cCI6MjEwMzQyNDg2M30.4QjWXdwqf_XlUuaaI7cQMNl48W_u0BX9OwXmLnPoRow';
 
@@ -1129,7 +1190,7 @@
                 const porcentagemLimitada = Math.max(0, Math.min(100, porcentagemPreenchida));
                 const porcentagemFormatada = porcentagemLimitada.toFixed(2).replace('.', ',');
 
-                document.getElementById('porcentagemTexto').innerText = `${porcentagemFormatada}% VENDIDO`;
+                document.getElementById('porcentagemTexto').innerText = `${porcentagemFormatada}%`;
                 document.getElementById('barraPreenchimento').style.width = `${porcentagemLimitada}%`;
 
             } catch (err) {
@@ -1207,7 +1268,7 @@
                                 ${raffle.winner_name || 'Ganhador Anônimo'}
                             </div>
                             <div style="display: inline-block; background: var(--primary-gold); color: #000; font-weight: 800; padding: 8px 18px; border-radius: 20px; font-size: 16px; box-shadow: var(--shadow-glow);">
-                                Cota Sorteada: #${String(raffle.winner_ticket_number).padStart(4, '0')}
+                                Cota Sorteada: #${String(raffle.winner_ticket_number)}
                             </div>
                         </div>
                     `;
@@ -1254,7 +1315,7 @@
 
             const { data: vendas, error } = await supabaseClient
                 .from('tickets')
-                .select('ticket_number, status, buyer_name, buyer_phone')
+                .select('ticket_number, status, buyer_name, buyer_phone, buyer_cpf, buyer_email')
                 .eq('raffle_id', 1)
                 .in('status', ['RESERVED', 'PAID'])
                 .order('ticket_number', { ascending: true });
@@ -1279,9 +1340,9 @@
 
                 html += `
                     <tr>
-                        <td><b>#${String(v.ticket_number).padStart(4, '0')}</b></td>
+                        <td><b>#${String(v.ticket_number)}</b></td>
                         <td><span class="${badgeClass}">${v.status}</span></td>
-                        <td>${v.buyer_name || '-'} <br><span style="font-size:10px;color:var(--text-muted);">${v.buyer_phone || '-'}</span></td>
+                        <td>${v.buyer_name || '-'} <br><span style="font-size:10px;color:var(--text-muted);">${v.buyer_phone || '-'}<br>${v.buyer_email || '-'}</span></td>
                         <td>${botoesAcao}</td>
                     </tr>
                 `;
@@ -1310,9 +1371,11 @@
         async function confirmarReserva() {
             const nome = document.getElementById('clienteNome').value.trim();
             const telefone = document.getElementById('clienteTelefone').value.trim();
+            const cpf = document.getElementById('clienteCpf').value.trim();
+            const email = document.getElementById('clienteEmail').value.trim();
 
-            if (!nome || !telefone) {
-                alert('Por favor, preencha o Nome Completo e o Telefone.');
+            if (!nome || somenteNumeros(telefone).length < 10 || somenteNumeros(cpf).length !== 11 || !email) {
+                alert('Por favor, preencha Nome Completo, Telefone, CPF e E-mail corretamente.');
                 return;
             }
 
@@ -1337,6 +1400,8 @@
                     status: 'RESERVED', 
                     buyer_name: nome,
                     buyer_phone: telefone,
+                    buyer_cpf: cpf,
+                    buyer_email: email,
                     reserved_at: new Date(),
                     expires_at: new Date(new Date().getTime() + 15 * 60000)
                 })
@@ -1358,7 +1423,7 @@
             document.getElementById('pixTotalValor').innerText = total;
 
             const grid = document.getElementById('pixNumerosReservados');
-            grid.innerHTML = numerosParaReservar.map(n => `<span class="number-tag">#${String(n).padStart(4, '0')}</span>`).join('');
+            grid.innerHTML = numerosParaReservar.map(n => `<span class="number-tag">#${String(n)}</span>`).join('');
 
             document.getElementById('modalPix').style.display = 'flex';
         }
@@ -1402,7 +1467,7 @@
                 pararMonitoramentoPagamento();
 
                 const numerosFormatados = numerosAguardandoPagamento
-                    .map(n => `#${String(n).padStart(4, '0')}`)
+                    .map(n => `#${String(n)}`)
                     .join(' • ');
 
                 document.getElementById('numerosPagamentoConfirmado').innerText = numerosFormatados;
@@ -1425,36 +1490,111 @@
             alert('Chave PIX copiada para a área de transferência!');
         }
 
+        function somenteNumeros(valor) {
+            return valor.replace(/\D/g, '');
+        }
+
+        function formatarCPF(input) {
+            let v = somenteNumeros(input.value).slice(0, 11);
+            if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+            else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+            else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+            input.value = v;
+        }
+
+        function formatarTelefone(input) {
+            let v = somenteNumeros(input.value).slice(0, 11);
+            if (v.length > 10) v = v.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            else if (v.length > 6) v = v.replace(/(\d{2})(\d{4})(\d{1,4})/, '($1) $2-$3');
+            else if (v.length > 2) v = v.replace(/(\d{2})(\d{1,5})/, '($1) $2');
+            input.value = v;
+        }
+
+        function mascararCPF(cpf) {
+            const n = somenteNumeros(cpf);
+            if (n.length !== 11) return '***.***.***-**';
+            return `${n.slice(0,3)}.***.***-${n.slice(9)}`;
+        }
+
+        function escaparHtml(texto) {
+            return String(texto ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+        }
+
         async function buscarMeusNumeros() {
-            const tel = document.getElementById('consultaTelefone').value.trim();
+            const tel = somenteNumeros(document.getElementById('consultaTelefone').value.trim());
+            const cpf = somenteNumeros(document.getElementById('consultaCpf').value.trim());
             const container = document.getElementById('resultadoConsulta');
             container.innerHTML = '<span style="color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Buscando...</span>';
 
-            if (!tel) {
-                container.innerHTML = '<span style="color:#ef4444;">Digite um telefone válido.</span>';
+            if (tel.length < 10 || cpf.length !== 11) {
+                container.innerHTML = '<span style="color:#ef4444;">Informe um telefone e CPF válidos.</span>';
                 return;
             }
 
             const { data: bilhetes, error: errBilhetes } = await supabaseClient
                 .from('tickets')
-                .select('ticket_number, status, buyer_name')
+                .select('ticket_number, status, buyer_name, buyer_phone, buyer_cpf, buyer_email')
                 .eq('raffle_id', 1)
-                .eq('buyer_phone', tel);
+                .eq('buyer_phone', document.getElementById('consultaTelefone').value.trim())
+                .eq('buyer_cpf', document.getElementById('consultaCpf').value.trim());
 
             if (errBilhetes || !bilhetes || bilhetes.length === 0) {
-                container.innerHTML = '<span style="color:var(--text-muted);">Nenhum bilhete encontrado para este telefone.</span>';
+                container.innerHTML = '<span style="color:var(--text-muted);">Nenhum bilhete encontrado com esses dados.</span>';
                 return;
             }
 
-            let html = `<p style="font-size:14px; margin-bottom: 8px;">Olá, <b>${bilhetes[0].buyer_name}</b>! Seus bilhetes:</p><div class="numbers-grid">`;
+            const primeiro = bilhetes[0];
+            let html = `<p style="font-size:14px; margin-bottom:12px;">Olá, <b>${escaparHtml(primeiro.buyer_name)}</b>!</p>`;
+            html += `<div style="text-align:left; font-size:13px; color:var(--text-muted); margin-bottom:12px; line-height:1.8;">CPF: <b style="color:#fff;">${mascararCPF(primeiro.buyer_cpf)}</b><br>E-mail: <b style="color:#fff;">${escaparHtml(primeiro.buyer_email || '-')}</b></div>`;
+            html += '<p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">Seus bilhetes:</p><div class="numbers-grid">';
             bilhetes.forEach(b => {
                 const corStatus = b.status === 'PAID' ? 'var(--primary-green)' : 'var(--primary-gold)';
                 const textCor = b.status === 'PAID' ? '#fff' : '#000';
-                html += `<span class="number-tag" style="background:${corStatus}; color:${textCor};">#${String(b.ticket_number).padStart(4, '0')} (${b.status})</span>`;
+                html += `<span class="number-tag" style="background:${corStatus}; color:${textCor};">#${b.ticket_number} (${b.status})</span>`;
             });
-            html += `</div>`;
-
+            html += '</div>';
             container.innerHTML = html;
+
+            await verificarResultadoSorteio(bilhetes);
+        }
+
+        async function verificarResultadoSorteio(bilhetes) {
+            const { data: raffle, error } = await supabaseClient
+                .from('raffles')
+                .select('status, winner_ticket_number, winner_name, drawn_at')
+                .eq('id', 1)
+                .single();
+
+            if (error || !raffle || raffle.status !== 'DRAWN' || !raffle.winner_ticket_number) return;
+
+            const pagos = bilhetes.filter(b => b.status === 'PAID');
+            const venceu = pagos.some(b => Number(b.ticket_number) === Number(raffle.winner_ticket_number));
+            const modal = document.getElementById('modalResultadoSorteio');
+            const conteudo = document.getElementById('conteudoResultadoSorteio');
+            const numero = `#${raffle.winner_ticket_number}`;
+
+            if (venceu) {
+                conteudo.innerHTML = `
+                    <div class="resultado-vencedor">
+                        <div class="resultado-icone"><i class="fa-solid fa-trophy"></i></div>
+                        <h3>🎉 PARABÉNS!</h3>
+                        <p>Você foi o grande vencedor do sorteio!</p>
+                        <div class="resultado-numeros">Número contemplado: ${numero}</div>
+                        <p style="margin-top:14px;">Entre em contato com a organização para receber as orientações sobre a premiação.</p>
+                        <button class="btn-modal" onclick="fecharModal('modalResultadoSorteio')"><i class="fa-solid fa-check"></i> Continuar</button>
+                    </div>`;
+            } else {
+                conteudo.innerHTML = `
+                    <div class="resultado-perdedor">
+                        <div class="resultado-icone"><i class="fa-regular fa-face-sad-tear"></i></div>
+                        <h3>Que pena! 😢</h3>
+                        <p>Seus números não foram contemplados no sorteio desta vez.</p>
+                        <p style="margin-top:10px;">O número sorteado foi <b style="color:#fff;">${numero}</b>.</p>
+                        <p style="margin-top:10px;">Obrigado por participar e boa sorte na próxima!</p>
+                        <button class="btn-modal" onclick="fecharModal('modalResultadoSorteio')"><i class="fa-solid fa-check"></i> Continuar</button>
+                    </div>`;
+            }
+            modal.style.display = 'flex';
         }
 
         async function realizarSorteioInterno(raffleId) {
@@ -1508,7 +1648,7 @@
                         seed_hash: seedHash
                     }]);
 
-                alert(`🎉 Sorteio Realizado com Sucesso!\n\nNúmero Ganhador: #${String(numeroVencedor).padStart(4, '0')}\nNome: ${ganhador.buyer_name}`);
+                alert(`🎉 Sorteio Realizado com Sucesso!\n\nNúmero Ganhador: #${String(numeroVencedor)}\nNome: ${ganhador.buyer_name}`);
                 location.reload();
 
             } catch (err) {

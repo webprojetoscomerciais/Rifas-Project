@@ -865,6 +865,63 @@
             background: rgba(255,255,255,.04); border: 1px solid var(--border-color);
             color: #fff; font-weight: 700;
         }
+
+        /* Destaque do prêmio */
+        .premio-destaque {
+            width: min(92%, 720px);
+            margin: 22px auto 0;
+            padding: 18px 22px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(245, 158, 11, 0.05));
+            border: 2px solid var(--primary-gold);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 0 28px var(--gold-glow);
+            position: relative;
+            overflow: hidden;
+        }
+        .premio-destaque::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+            transform: translateX(-100%);
+            animation: brilhoPremio 3s infinite;
+        }
+        .premio-destaque .premio-label {
+            position: relative;
+            display: block;
+            color: var(--primary-gold);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .premio-destaque .premio-valor {
+            position: relative;
+            display: block;
+            color: #fff;
+            font-size: clamp(30px, 7vw, 46px);
+            line-height: 1.1;
+            font-weight: 800;
+        }
+        .premio-destaque .premio-valor i {
+            color: var(--primary-gold);
+            font-size: .7em;
+            margin-right: 6px;
+        }
+        .premio-destaque .premio-subtitulo {
+            position: relative;
+            display: block;
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+        @keyframes brilhoPremio {
+            0%, 55% { transform: translateX(-100%); }
+            75%, 100% { transform: translateX(100%); }
+        }
+
     </style>
 </head>
 <body>
@@ -894,7 +951,7 @@
                 <button class="btn-auth-primary" onclick="toggleMenu(); abrirModalConsulta();">
                     <i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar
                 </button>
-                <button class="btn-auth-outline" onclick="toggleMenu(); abrirModalConsulta();">
+                <button class="btn-auth-outline" onclick="toggleMenu(); abrirModalCadastro();">
                     Criar cadastro
                 </button>
             </div>
@@ -916,7 +973,7 @@
         </a>
 
         <div class="menu-section-label">MINHA CONTA</div>
-        <a href="#" onclick="toggleMenu(); abrirModalConsulta();" class="menu-item">
+        <a href="#" onclick="toggleMenu(); abrirModalCadastro(); return false;" class="menu-item">
             <div class="icon-box"><i class="fa-solid fa-user-plus"></i></div>
             <span>Criar cadastro</span>
         </a>
@@ -939,6 +996,13 @@
         <img src="logo.jpeg" alt="SR Sorteios" class="logo-main"><br>
         <h1>Prêmios em <span>PIX</span></h1>
         <p><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-gold);"></i> A sua sorte começa aqui!</p>
+    </div>
+
+    <!-- Destaque do prêmio -->
+    <div class="premio-destaque" aria-label="Prêmio da campanha: mil reais">
+        <span class="premio-label"><i class="fa-solid fa-trophy"></i> Prêmio da campanha</span>
+        <span class="premio-valor"><i class="fa-solid fa-brazilian-real-sign"></i> R$ 1.000,00</span>
+        <span class="premio-subtitulo">Concorra ao prêmio de mil reais em PIX</span>
     </div>
 
     <!-- Container Principal -->
@@ -991,7 +1055,7 @@
                 <i class="fa-solid fa-shield-halved"></i> Painel do Administrador
             </p>
             <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 12px 0;">Gestão e controle de bilhetes em tempo real:</p>
-            <button class="btn-modal" style="width:auto;padding:8px 12px;margin:0 0 14px 0;" onclick="sairDoAdmin()">
+            <button type="button" class="btn-modal" style="width:auto;padding:8px 12px;margin:0 0 14px 0;" onclick="sairDoAdmin()">
                 <i class="fa-solid fa-right-from-bracket"></i> Sair do painel
             </button>
             
@@ -1011,7 +1075,7 @@
                 </table>
             </div>
 
-            <button class="btn-sorteio" onclick="realizarSorteioInterno(1)">
+            <button type="button" class="btn-sorteio" onclick="realizarSorteioInterno(1)">
                 <i class="fa-solid fa-dice"></i> Realizar Sorteio Seguro entre os Pagos
             </button>
         </div>
@@ -1049,7 +1113,7 @@
                     onkeydown="if(event.key === 'Enter') entrarComoAdmin();">
             </div>
 
-            <button class="btn-modal" id="btnEntrarAdmin" onclick="entrarComoAdmin()">
+            <button type="button" class="btn-modal" id="btnEntrarAdmin" onclick="entrarComoAdmin()">
                 <i class="fa-solid fa-right-to-bracket"></i> Entrar
             </button>
             <p id="adminLoginMensagem" style="font-size:12px;margin-top:12px;color:#ef4444;min-height:18px;"></p>
@@ -1088,6 +1152,43 @@
         </div>
     </div>
 
+    <!-- MODAL: CRIAR CADASTRO -->
+    <div class="modal-overlay" id="modalCadastro">
+        <div class="modal-content">
+            <span class="modal-close" onclick="fecharModal('modalCadastro')"><i class="fa-solid fa-xmark"></i></span>
+            <h3 style="color: var(--primary-gold); margin-top:0; font-size: 20px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-user-plus"></i> Criar cadastro
+            </h3>
+            <p style="font-size:13px; color: var(--text-muted); margin-top: 4px; margin-bottom: 18px;">
+                Preencha seus dados. Eles serão usados automaticamente quando você for comprar suas cotas.
+            </p>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-user"></i> Nome Completo</label>
+                <input type="text" id="cadastroNome" placeholder="Ex: João Silva">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-brands fa-whatsapp"></i> Telefone (WhatsApp)</label>
+                <input type="tel" id="cadastroTelefone" placeholder="(83) 99999-9999" maxlength="15" oninput="formatarTelefone(this)">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-id-card"></i> CPF</label>
+                <input type="text" id="cadastroCpf" placeholder="000.000.000-00" maxlength="14" oninput="formatarCPF(this)">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-envelope"></i> E-mail</label>
+                <input type="email" id="cadastroEmail" placeholder="seuemail@exemplo.com">
+            </div>
+
+            <button type="button" class="btn-modal" onclick="salvarCadastroCliente()">
+                <i class="fa-solid fa-floppy-disk"></i> Salvar cadastro
+            </button>
+            <p style="font-size:11px;color:var(--text-muted);line-height:1.5;margin-top:12px;text-align:center;">
+                O cadastro fica salvo neste dispositivo para facilitar suas próximas compras.
+            </p>
+        </div>
+    </div>
+
     <!-- MODAL 2: TELA DO PIX -->
     <div class="modal-overlay" id="modalPix">
         <div class="modal-content" style="text-align: center;">
@@ -1103,7 +1204,7 @@
             <div class="numbers-grid" id="pixNumerosReservados"></div>
 
             <p style="font-size: 12px; color: var(--primary-gold); font-weight: 700; margin-top: 10px;">Chave PIX (Copia e Cola):</p>
-            <div class="pix-code" id="chavePixTexto">00020126580014BR.GOV.BCB.PIX0136cliente@email.com520400005303986540500.005802BR</div>
+            <div class="pix-code" id="chavePixTexto">00020126360014BR.GOV.BCB.PIX0114690188430001115204000053039865802BR592569.018.843 SAMUEL RENAN D6009SAO PAULO62140510zuw3gDus6B630480F7</div>
 
             <button class="btn-modal" onclick="copiarPix()">
                 <i class="fa-solid fa-copy"></i> Copiar Chave PIX
@@ -1281,6 +1382,65 @@
             document.getElementById('resultadoConsulta').innerHTML = '';
         }
 
+        function obterCadastroCliente() {
+            try {
+                return JSON.parse(localStorage.getItem('srSorteiosCadastroCliente') || 'null');
+            } catch (err) {
+                return null;
+            }
+        }
+
+        function preencherDadosCliente(dados) {
+            if (!dados) return;
+            const campos = {
+                clienteNome: dados.nome || '',
+                clienteTelefone: dados.telefone || '',
+                clienteCpf: dados.cpf || '',
+                clienteEmail: dados.email || ''
+            };
+
+            Object.entries(campos).forEach(([id, valor]) => {
+                const campo = document.getElementById(id);
+                if (campo) campo.value = valor;
+            });
+        }
+
+        function abrirModalCadastro() {
+            const cadastro = obterCadastroCliente();
+
+            document.getElementById('cadastroNome').value = cadastro?.nome || '';
+            document.getElementById('cadastroTelefone').value = cadastro?.telefone || '';
+            document.getElementById('cadastroCpf').value = cadastro?.cpf || '';
+            document.getElementById('cadastroEmail').value = cadastro?.email || '';
+
+            document.getElementById('modalCadastro').style.display = 'flex';
+        }
+
+        function salvarCadastroCliente() {
+            const nome = document.getElementById('cadastroNome').value.trim();
+            const telefone = document.getElementById('cadastroTelefone').value.trim();
+            const cpf = document.getElementById('cadastroCpf').value.trim();
+            const emailInput = document.getElementById('cadastroEmail');
+            const email = emailInput.value.trim().toLowerCase();
+
+            if (!nome || somenteNumeros(telefone).length < 10 || somenteNumeros(cpf).length !== 11 || !email) {
+                alert('Por favor, preencha Nome Completo, Telefone, CPF e E-mail corretamente.');
+                return;
+            }
+
+            if (!emailInput.checkValidity()) {
+                alert('Informe um e-mail válido.');
+                return;
+            }
+
+            const cadastro = { nome, telefone, cpf, email };
+            localStorage.setItem('srSorteiosCadastroCliente', JSON.stringify(cadastro));
+            preencherDadosCliente(cadastro);
+
+            fecharModal('modalCadastro');
+            alert('Cadastro salvo com sucesso! Seus dados serão preenchidos automaticamente quando você for comprar cotas.');
+        }
+
         async function abrirModalGanhadores() {
             const modal = document.getElementById('modalGanhadores');
             const container = document.getElementById('conteudoGanhadores');
@@ -1304,7 +1464,6 @@
                             <i class="fa-solid fa-crown" style="font-size:38px;color:var(--primary-gold);margin-bottom:12px;"></i>
                             <h4 style="font-size:18px;color:#fff;margin-bottom:4px;font-weight:800;">Grande Vencedor!</h4>
                             <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Sorteio realizado em ${dataFormatada}</p>
-                            <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:10px;">${escaparHtml(raffle.winner_name || 'Ganhador Anônimo')}</div>
                             <div style="display:inline-block;background:var(--primary-gold);color:#000;font-weight:800;padding:8px 18px;border-radius:20px;font-size:16px;">Cota Sorteada: #${raffle.winner_ticket_number}</div>
                         </div>`;
                 } else {
@@ -1323,6 +1482,7 @@
 
         function iniciarCheckout() {
             const qtd = document.getElementById('qtdInput').value;
+            preencherDadosCliente(obterCadastroCliente());
             document.getElementById('resumoCheckoutTexto').innerText = `Você está reservando ${qtd} cota(s). Preencha seus dados para continuar:`;
             document.getElementById('modalCheckout').style.display = 'flex';
         }
@@ -1407,56 +1567,130 @@
             document.getElementById('adminLoginMensagem').innerText = '';
         }
 
+        async function garantirSessaoAdmin() {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+
+            if (error || !session) {
+                document.getElementById('painelAdmin').style.display = 'none';
+                alert('Sua sessão de administrador expirou. Entre novamente no Painel Admin.');
+                abrirLoginAdmin();
+                return false;
+            }
+
+            const { data: adminOk, error: adminError } =
+                await supabaseClient.rpc('verificar_admin_atual');
+
+            if (adminError || adminOk !== true) {
+                await supabaseClient.auth.signOut();
+                document.getElementById('painelAdmin').style.display = 'none';
+                alert('Sua sessão administrativa não é mais válida. Entre novamente.');
+                abrirLoginAdmin();
+                return false;
+            }
+
+            return true;
+        }
+
         async function carregarTabelaVendasAdmin() {
             const tbody = document.getElementById('adminTabelaVendas');
+
+            if (!tbody) return;
+
             tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando registros...</td></tr>`;
 
-            const { data: vendas, error } = await supabaseClient.rpc('admin_listar_vendas', { p_raffle_id: 1 });
+            try {
+                if (!(await garantirSessaoAdmin())) return;
 
-            if (error) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;">Sessão sem permissão ou erro ao carregar dados.</td></tr>`;
-                return;
+                const { data: vendas, error } =
+                    await supabaseClient.rpc('admin_listar_vendas', { p_raffle_id: 1 });
+
+                if (error) {
+                    console.error('Erro ao listar vendas:', error);
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;">Erro ao carregar vendas: ${escaparHtml(error.message || 'permissão negada')}</td></tr>`;
+                    return;
+                }
+
+                // Algumas funções RPC podem retornar um objeto em vez de um array.
+                const listaVendas = Array.isArray(vendas) ? vendas : (vendas ? [vendas] : []);
+
+                if (listaVendas.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">Nenhum bilhete reservado ou pago até o momento.</td></tr>`;
+                    return;
+                }
+
+                let html = '';
+
+                listaVendas.forEach(v => {
+                    const status = String(v.status || '').toUpperCase();
+                    const badgeClass = status === 'PAID'
+                        ? 'status-badge-paid'
+                        : 'status-badge-reserved';
+
+                    const botoesAcao = status === 'RESERVED'
+                        ? `<button type="button" class="btn-aprovar" onclick="marcarComoPago(${Number(v.ticket_number)})">
+                             <i class="fa-solid fa-check"></i> Aprovar
+                           </button>`
+                        : '-';
+
+                    html += `
+                        <tr>
+                            <td><b>#${escaparHtml(v.ticket_number)}</b></td>
+                            <td><span class="${badgeClass}">${escaparHtml(status || '-')}</span></td>
+                            <td>
+                                ${escaparHtml(v.buyer_name || '-')}<br>
+                                <span style="font-size:10px;color:var(--text-muted);">
+                                    ${escaparHtml(v.buyer_phone || '-')}<br>
+                                    ${escaparHtml(v.buyer_email || '-')}
+                                </span>
+                            </td>
+                            <td>${botoesAcao}</td>
+                        </tr>`;
+                });
+
+                tbody.innerHTML = html;
+            } catch (err) {
+                console.error('Erro inesperado no painel admin:', err);
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;">Erro inesperado ao carregar o painel.</td></tr>`;
             }
-
-            if (!vendas || vendas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">Nenhum bilhete reservado ou pago até o momento.</td></tr>`;
-                return;
-            }
-
-            let html = '';
-            vendas.forEach(v => {
-                const badgeClass = v.status === 'PAID' ? 'status-badge-paid' : 'status-badge-reserved';
-                const botoesAcao = v.status === 'RESERVED'
-                    ? `<button class="btn-aprovar" onclick="marcarComoPago(${v.ticket_number})"><i class="fa-solid fa-check"></i> Aprovar</button>`
-                    : '-';
-
-                html += `
-                    <tr>
-                        <td><b>#${v.ticket_number}</b></td>
-                        <td><span class="${badgeClass}">${v.status}</span></td>
-                        <td>${escaparHtml(v.buyer_name || '-')}<br><span style="font-size:10px;color:var(--text-muted);">${escaparHtml(v.buyer_phone || '-')}<br>${escaparHtml(v.buyer_email || '-')}</span></td>
-                        <td>${botoesAcao}</td>
-                    </tr>`;
-            });
-            tbody.innerHTML = html;
         }
 
         async function marcarComoPago(ticketNumber) {
+            if (!(await garantirSessaoAdmin())) return;
+
             if (!confirm(`Deseja aprovar o pagamento da cota #${ticketNumber}?`)) return;
 
-            const { data, error } = await supabaseClient.rpc('admin_marcar_pago', {
-                p_raffle_id: 1,
-                p_ticket_number: ticketNumber
-            });
+            try {
+                const { data, error } = await supabaseClient.rpc('admin_marcar_pago', {
+                    p_raffle_id: 1,
+                    p_ticket_number: Number(ticketNumber)
+                });
 
-            if (error || data !== true) {
-                alert('Não foi possível aprovar este pagamento.');
-                return;
+                if (error) {
+                    console.error('Erro ao aprovar pagamento:', error);
+                    alert(`Não foi possível aprovar este pagamento.\n\n${error.message || 'Erro no Supabase.'}`);
+                    return;
+                }
+
+                // Aceita retorno booleano, objeto de sucesso ou retorno vazio.
+                const sucesso =
+                    data === true ||
+                    data?.success === true ||
+                    data?.status === 'PAID' ||
+                    data === null;
+
+                if (!sucesso) {
+                    console.error('Retorno inesperado de admin_marcar_pago:', data);
+                    alert('A função do banco retornou um resultado inesperado. Verifique o Supabase.');
+                    return;
+                }
+
+                alert(`Pagamento da cota #${ticketNumber} aprovado com sucesso!`);
+                await carregarTabelaVendasAdmin();
+                await carregarProgressoRifa();
+            } catch (err) {
+                console.error('Erro inesperado ao aprovar pagamento:', err);
+                alert(`Erro inesperado ao aprovar o pagamento: ${err.message || err}`);
             }
-
-            alert(`Pagamento da cota #${ticketNumber} aprovado com sucesso!`);
-            await carregarTabelaVendasAdmin();
-            await carregarProgressoRifa();
         }
 
         async function confirmarReserva() {
@@ -1674,17 +1908,43 @@
         }
 
         async function realizarSorteioInterno(raffleId) {
+            if (!(await garantirSessaoAdmin())) return;
+
             if (!confirm('Tem certeza que deseja realizar o sorteio? Esta ação será registrada no banco e não deve ser repetida.')) return;
 
-            const { data, error } = await supabaseClient.rpc('admin_realizar_sorteio', { p_raffle_id: raffleId });
+            try {
+                const { data, error } =
+                    await supabaseClient.rpc('admin_realizar_sorteio', {
+                        p_raffle_id: Number(raffleId)
+                    });
 
-            if (error || !data?.success) {
-                alert(error?.message || data?.message || 'Não foi possível realizar o sorteio.');
-                return;
+                if (error) {
+                    console.error('Erro ao realizar sorteio:', error);
+                    alert(error.message || 'Não foi possível realizar o sorteio.');
+                    return;
+                }
+
+                // O retorno esperado é um objeto JSON com success e o vencedor.
+                // Também aceitamos retorno em array, caso a RPC tenha sido criada como tabela.
+                const resultado = Array.isArray(data) ? data[0] : data;
+
+                if (!resultado || resultado.success !== true) {
+                    console.error('Retorno inesperado de admin_realizar_sorteio:', data);
+                    alert(resultado?.message || 'O sorteio não foi realizado. Verifique as condições e as permissões no Supabase.');
+                    return;
+                }
+
+                alert(
+                    `🎉 Sorteio realizado com sucesso!\n\n` +
+                    `Número ganhador: #${resultado.winner_ticket_number}\n` +
+                    `Nome: ${resultado.winner_name || 'Ganhador Anônimo'}`
+                );
+
+                location.reload();
+            } catch (err) {
+                console.error('Erro inesperado ao realizar sorteio:', err);
+                alert(`Erro inesperado ao realizar o sorteio: ${err.message || err}`);
             }
-
-            alert(`🎉 Sorteio realizado com sucesso!\n\nNúmero ganhador: #${data.winner_ticket_number}\nNome: ${data.winner_name || 'Ganhador Anônimo'}`);
-            location.reload();
         }
     </script>
 </body>

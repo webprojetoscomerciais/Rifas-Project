@@ -1142,8 +1142,8 @@
                 <input type="text" id="clienteCpf" placeholder="000.000.000-00" maxlength="14" oninput="formatarCPF(this)">
             </div>
             <div class="form-group">
-                <label><i class="fa-solid fa-envelope"></i> E-mail</label>
-                <input type="email" id="clienteEmail" placeholder="seuemail@exemplo.com">
+                <label><i class="fa-solid fa-envelope"></i> E-mail <span style="font-weight:400;color:var(--text-muted);">(opcional)</span></label>
+                <input type="email" id="clienteEmail" placeholder="seuemail@exemplo.com (opcional)">
             </div>
 
             <button class="btn-modal" onclick="confirmarReserva()">
@@ -1693,10 +1693,16 @@
             const nome = document.getElementById('clienteNome').value.trim();
             const telefone = document.getElementById('clienteTelefone').value.trim();
             const cpf = document.getElementById('clienteCpf').value.trim();
-            const email = document.getElementById('clienteEmail').value.trim();
+            const emailInput = document.getElementById('clienteEmail');
+            const email = emailInput.value.trim().toLowerCase();
 
-            if (!nome || somenteNumeros(telefone).length < 10 || somenteNumeros(cpf).length !== 11 || !email) {
-                alert('Por favor, preencha Nome Completo, Telefone, CPF e E-mail corretamente.');
+            if (!nome || somenteNumeros(telefone).length < 10 || somenteNumeros(cpf).length !== 11) {
+                alert('Por favor, preencha Nome Completo, Telefone e CPF corretamente.');
+                return;
+            }
+
+            if (email && !emailInput.checkValidity()) {
+                alert('Se informar um e-mail, digite um endereço válido.');
                 return;
             }
 
